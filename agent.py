@@ -28,14 +28,14 @@ class Agent:
                 {"role": "user", "content": user_prompt}
             ]
 
-            input_tokens = count_openai_input_tokens(messages, model=config.OPENAI_MODEL)
+            input_tokens = count_openai_input_tokens(messages, model=prompts_constants.GPT_4O)
             llm_response = config.OPENAI_MODEL.chat.completions.create(
-                model=config.OPENAI_MODEL,
+                model=prompts_constants.GPT_4O,
                 messages=messages,
                 temperature=0.3,
             )
             output_text = llm_response.choices[0].message.content.strip()
-            output_tokens = count_openai_output_tokens(output_text, model=config.OPENAI_MODEL)
+            output_tokens = count_openai_output_tokens(output_text, model=prompts_constants.GPT_4O)
 
             self.input_tokens_used += input_tokens
             self.output_tokens_used += output_tokens

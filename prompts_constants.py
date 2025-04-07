@@ -4,20 +4,21 @@ ROLES = ["mafia", "detective", "civilian"]
 
 SYSTEM_PROMPTS = {
     "rules": """
+    You are a player in the Mafia game.
     The Mafia game is a game of deception and deduction involving good and bad players.
 
     ## Roles:
     - **Mafia** (3 players): Know each other, one of the mafia players is the mafia don. Each night, they vote to eliminate a player. Mafia players act as civilian players to not rais suspicion against them.
     - **Detective** (1 player): Each night, can investigate one player to learn if they're Mafia or not.
-    - **Civilians**: Regular townspeople with no special powers. Must help deduce and vote out Mafia.
+    - **Civilians** (6 players): Regular townspeople with no special powers. Must help deduce and vote out Mafia.
 
     ## Game Phases:
     - **Night Phase**:
         - Mafia choose one player to eliminate.
-        - Detective chooses one player to investigate and learns their alignment.
+        - Detective chooses one player to investigate and learns their alignment(whether he is mafia or not).
 
     - **Day Phase**:
-        - All living players discuss who they suspect is Mafia.
+        - All living players discuss who they suspect is Mafia. Each player one by one gives his opinion.
         - Each player votes to eliminate someone. The player with the most votes is removed from the game.
 
     ## Victory Conditions:
@@ -26,7 +27,6 @@ SYSTEM_PROMPTS = {
 
     ## Rules:
     - Players must reason and communicate based on past actions, voting patterns, and dialogue.
-    - Players may not reveal hidden information directly (e.g., the detective cannot say outright who they investigated).
     - The game is played over multiple day/night cycles until a win condition is met.
     """,
 
@@ -45,13 +45,29 @@ SYSTEM_PROMPTS = {
     - If mafia outnumber or equal the others, you win.
     """,
 
+    "don": """
+    You are a the DON(boss) of the **Mafia**. You know who your fellow mafia members are. Your goal is to eliminate the other players without being discovered. You will decide the final kill target during the night.
+
+    ## Your Strategy:
+    - Vote with other mafia members at night to eliminate one player.
+    - During the day, participate in discussion and pretend to be a civilian.
+    - Avoid being too quiet or too aggressive.
+    - Deflect suspicion onto others subtly.
+    - Decide the final kill after each mafia player votes whom to kill.
+
+    ## Remember:
+    - You know who the other mafia is.
+    - If all mafia are eliminated, you lose.
+    - If mafia outnumber or equal the others, you win.
+    """,
+
     "detective": """
     You are the **Detective**. Each night, you can investigate one player and learn whether they are Mafia or not.
 
     ## Your Strategy:
     - Choose players to investigate based on behavior and discussion.
     - Keep track of what you learn.
-    - Try to steer the group toward correct decisions without revealing your role.
+    - Try to steer the group toward correct decisions using you investigations knowledge tha you have, but be careful as sometimes revealing that you are the detective the next night the mafia can target you.
 
     ## Remember:
     - If the Mafia discover you, they will try to eliminate you.
@@ -71,3 +87,4 @@ SYSTEM_PROMPTS = {
     - You win when all mafia are eliminated.
     """
 }
+

@@ -1,6 +1,5 @@
 import random
-from agent2 import Agent
-import numpy as np
+from agent import Agent
 
 
 class MafiaGame:
@@ -23,7 +22,7 @@ class MafiaGame:
             if role in ["mafia", "don"]:
                 self.players.append(Agent(llm_name=llm_name, player_name=f"player_{i}", player_role=role, mafia_player_indices=mafia_indices))
             else:
-                self.players.append(Agent(llm_name=llm_name, player_name=f"player_{i}", player_role=role, mafia_players=[]))
+                self.players.append(Agent(llm_name=llm_name, player_name=f"player_{i}", player_role=role, mafia_player_indices=[]))
 
     def get_alive_players(self):
         return [i for i, alive in enumerate(self.alive) if alive]
@@ -70,19 +69,19 @@ class MafiaGame:
             self.game_log += f"\nplayer_{i} says: {statement}"
 
         # Voting
-        nominees = random.sample(alive_players, k=min(3, len(alive_players))) #todo agents should put the votes
-        vote_counts = {n: 0 for n in nominees}
+        vote_counts = {n: 0 for n in alive_players}
         for i in alive_players:
-            vote, reason = self.players[i].vote_day(self.game_log, nominees)
+            vote, reason = self.players[i].vote_day(self.game_log, alive_players)
             vote_counts[vote] += 1
-            vote_statement = f"player_{i} voted to eliminate player_{vote} - Reason: {reason}"
-            self.votes_log += f"\n{vote_statement}"
+            vote_statement_with_reason = f"player_{i} voted to eliminate player_{vote} - Reason: {reason}"
+            vote_statement = f"player_{i} voted to eliminate player_{vote}"
+            self.votes_log += f"\n{vote_statement_with_reason}"
             self.game_log += f"\n{vote_statement}"
 
         # Eliminate player with most votes
         eliminated = max(vote_counts, key=vote_counts.get)
         self.alive[eliminated] = False
-        self.game_log += f"\nDay: player_{eliminated} was voted out by the town"
+        self.game_log += f"\nDay: player_{eliminated} was voted out by the town/players of the game"
 
     def check_win_condition(self):
         alive_roles = [self.roles[i] for i in self.get_alive_players()]
@@ -99,16 +98,13 @@ class MafiaGame:
             return True
         return False
 
-    def run(self):
+    def run(self) -> str:
         while not self.check_win_condition():
+            print(self.game_log)
             self.night_phase()
             if self.check_win_condition():
                 break
             self.day_phase()
         print("\n--- Game Over ---")
-        print(self.game_log)
-        print("\nAll Player Statements:")
-        print(self.opinion_log)
-        print("\nAll Votes:")
-        print(self.votes_log)
-        print("\nWinner:", self.winner_log)
+        return self.game_log
+
