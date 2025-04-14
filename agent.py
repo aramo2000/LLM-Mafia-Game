@@ -1,10 +1,9 @@
 import random
 from typing import List
-
 import config
 import prompts_constants
 from token_utils import count_openai_input_tokens, count_openai_output_tokens
-
+import json
 
 class Agent:
     def __init__(self, llm_name: str, player_name: str, player_role: str, mafia_player_indices: List[int]):
@@ -28,14 +27,14 @@ class Agent:
                 {"role": "user", "content": user_prompt}
             ]
 
-            input_tokens = count_openai_input_tokens(messages, model=prompts_constants.GPT_4O)
-            llm_response = config.OPENAI_MODEL.chat.completions.create(
-                model=prompts_constants.GPT_4O,
+            input_tokens = count_openai_input_tokens(messages, model=config.OPENAI_MODEL)
+            llm_response = config.OPENAI_CLIENT.chat.completions.create(
+                model=config.OPENAI_MODEL,
                 messages=messages,
                 temperature=0.3,
             )
             output_text = llm_response.choices[0].message.content.strip()
-            output_tokens = count_openai_output_tokens(output_text, model=prompts_constants.GPT_4O)
+            output_tokens = count_openai_output_tokens(output_text, model=config.OPENAI_MODEL)
 
             self.input_tokens_used += input_tokens
             self.output_tokens_used += output_tokens
@@ -50,11 +49,18 @@ class Agent:
 
     def speak_opinion(self, game_log: str) -> str:
         system_prompt = self._build_system_prompt()
+
+        # Provide more specific context in the user prompt based on the player's role and past behavior
         user_prompt = (
             f"Here is what happened in the game so far:\n{game_log}\n\n"
-            "Now it's the DAY phase. Please express your thoughts and suspicions about who could be Mafia. "
-            "Keep it short, logical, and persuasive. Return only your statement."
+            f"As {self.player_name} (role: {self.role}), please express your thoughts and suspicions about who could be Mafia. "
+            "Consider your role and any relevant interactions you've had. Your reason should be logical and persuasive.\n"
+            "Use your role’s perspective to guide your response. If you're Mafia, consider how to blend in and mislead others. "
+            "If you're a Detective, focus on gathering evidence. If you're a Civilian, be vigilant for inconsistencies.\n"
+            "Return only your statement.\n"
         )
+
+        # Get the LLM response
         return self._call_llm(system_prompt, user_prompt)
 
     def vote_day(self, game_log: str, nominees: list[int]) -> tuple:
@@ -63,15 +69,36 @@ class Agent:
         user_prompt = (
             f"Here is what happened in the game so far:\n{game_log}\n\n"
             f"The following players are nominated for elimination: {', '.join(nominee_names)}.\n"
-            "Choose who you want to eliminate and explain your reasoning.\n\n"
-            "Format:\nplayer_#\n\"Reason\"\n"
+            "Choose who you want to eliminate or vote for no one.\n"
+            "First provide the player you want to vote for (or 'no one'). Then provide your reason on the next line.\n"
+            "Format: player_# or 'no one'\n\"Reason\"\n"
         )
         response = self._call_llm(system_prompt, user_prompt)
+
         try:
+            # Split the response into vote and reason
             lines = response.split("\n", 1)
-            voted_player = int(lines[0].replace("player_", "").strip())
-            reason = lines[1].strip() if len(lines) > 1 else "No reason provided"
-            return voted_player, reason
+            vote_choice = lines[0].strip()  # The first part is the vote
+            reason = lines[1].strip() if len(lines) > 1 else "No reason provided"  # The second part is the reason
+
+            # Handle 'no one' vote
+            if vote_choice.lower() == "no one":
+                return -1, reason  # -1 indicates 'no one' as the vote
+
+            # Check if the vote is in the correct player format
+            if vote_choice.lower().startswith("player_"):
+                try:
+                    voted_player = int(vote_choice.replace("player_", "").strip())  # Extract the player number
+                    return voted_player, reason
+                except ValueError:
+                    # If there's an invalid player format, fallback to a default vote
+                    print(f"[vote_day error] Invalid player format: {vote_choice}")
+                    return nominees[0], reason
+            else:
+                # If the vote is not in the correct format, fallback to the first nominee
+                print(f"[vote_day error] Invalid vote format: {vote_choice}")
+                return nominees[0], reason
+
         except Exception as e:
             print(f"[vote_day error] {e}")
             return nominees[0], "Fallback vote due to parsing error."

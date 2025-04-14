@@ -70,18 +70,28 @@ class MafiaGame:
 
         # Voting
         vote_counts = {n: 0 for n in alive_players}
+        no_one_votes = 0
         for i in alive_players:
             vote, reason = self.players[i].vote_day(self.game_log, alive_players)
-            vote_counts[vote] += 1
-            vote_statement_with_reason = f"player_{i} voted to eliminate player_{vote} - Reason: {reason}"
-            vote_statement = f"player_{i} voted to eliminate player_{vote}"
-            self.votes_log += f"\n{vote_statement_with_reason}"
-            self.game_log += f"\n{vote_statement}"
+            if vote == -1:  # Vote to 'no one'
+                no_one_votes += 1
+                vote_statement_with_reason = f"player_{i} voted to eliminate no one - Reason: {reason}"
+            else:
+                vote_counts[vote] += 1
+                vote_statement_with_reason = f"player_{i} voted to eliminate player_{vote} - Reason: {reason}"
 
-        # Eliminate player with most votes
-        eliminated = max(vote_counts, key=vote_counts.get)
-        self.alive[eliminated] = False
-        self.game_log += f"\nDay: player_{eliminated} was voted out by the town/players of the game"
+            self.votes_log += f"\n{vote_statement_with_reason}"
+            self.game_log += f"\n{vote_statement_with_reason}"
+
+        # Determine the elimination
+        most_votes_player = max(vote_counts, key=vote_counts.get)
+        most_votes_count = vote_counts[most_votes_player]
+
+        if most_votes_count <= no_one_votes:  # No one should be eliminated
+            self.game_log += "\nNo elimination this round."
+        else:
+            self.alive[most_votes_player] = False
+            self.game_log += f"\nDay: player_{most_votes_player} was voted out by the town/players of the game"
 
     def check_win_condition(self):
         alive_roles = [self.roles[i] for i in self.get_alive_players()]
