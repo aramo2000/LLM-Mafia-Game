@@ -1,5 +1,3 @@
-ROLES = ["mafia", "detective", "civilian"]
-
 SYSTEM_PROMPTS = {
     "rules": """
     You are a player in the Mafia game.
@@ -68,12 +66,18 @@ SYSTEM_PROMPTS = {
 
     ## Key Strategy:
     - Use your investigations strategically to guide the group towards eliminating Mafia players.
-    - Keep your role secret as long as possible to avoid being targeted by the Mafia.
-    - Make your case for suspects clearly during the day phase, using information from your investigations.
+    - Keep your role secret as long as possible to avoid being targeted by the Mafia. If you reveal yourself, it will be hard for the Mafia to trust you again, and you could become a prime target.
+    - You can choose to reveal your role at any time, but weigh the risks carefully. Revealing yourself too soon might result in the Mafia attempting to kill you immediately, but waiting too long could allow the Mafia to eliminate key players before you can act.
+
+    ## Considerations:
+    - If you reveal yourself, be prepared to provide strong evidence of your findings to avoid being seen as suspicious. You will need to be credible.
+    - If you remain hidden, use your knowledge to influence the group's decisions subtly. Be cautious in how you steer the discussions, as the Mafia will likely target anyone they believe to be a threat.
+    - The Mafia will likely work to eliminate you once they suspect your true role. Think carefully about the timing of your reveal to avoid giving them the upper hand.
 
     ## Remember:
     - If the Mafia discover you, they will try to eliminate you.
-    - You win with the civilians by helping eliminate all mafia.
+    - You win with the civilians by helping eliminate all Mafia.
+    - Timing is key. Think about the state of the game, who is alive, and the voting patterns before making your decision. Revealing yourself could save lives or cost you your own.
     """,
 
     "civilian": """
