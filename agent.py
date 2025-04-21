@@ -18,7 +18,7 @@ class Agent:
         self.investigations = []
         self.mafia_thinking = []  # To store the internal reasons for the mafia kill decisions
         self.detective_thinking = []  # To store detective reasoning
-
+        self.mafia_kill_targets = []
 
         if self.role in ["mafia", "don"]:
             self.mafia_players = [f"player_{i}" for i in mafia_player_indices]
@@ -121,6 +121,9 @@ class Agent:
             f"Here is what happened in the game so far:\n{game_log}\n\n"
             f"{investigation_history}"
             f"As {self.player_name} (role: {self.role}), please express your thoughts and suspicions about who could be Mafia. "
+            "Use the information from the game of how a player died to assess how many Mafia could still be alive.\n"
+            "Note: Mafia are only eliminated through DAY voting, not during the night.\n"
+            "You must reason about whether it's safe to vote or not. If Mafia reach parity (equal number as civilians), they win immediately.\n"
             "Consider your role and any relevant interactions you've had. Your reason should be logical and persuasive.\n"
             "Return only your statement.The statement should be brief and not exceed 3-4 sentences in length to keep it concise.\n"
         )
@@ -139,6 +142,9 @@ class Agent:
             f"The following players are nominated for elimination: {', '.join(nominee_names)}.\n"
             f"Past votes and reasons:\n{past_votes}\n\n"
             "Choose who you want to eliminate or vote for no one.\n"
+            "Use the information from the game of how a player died to assess how many Mafia could still be alive.\n"
+            "Note: Mafia are only eliminated through DAY voting, not during the night.\n"
+            "You must reason about whether it's safe to vote or not. If Mafia reach parity (equal number as civilians), they win immediately.\n"
         )
 
         user_prompt += (
@@ -265,8 +271,51 @@ class Agent:
                     "internal_reason": internal_reason
                 })
 
+            self.mafia_kill_targets.append(f"player_{voted_player}")
             return voted_player
         except Exception as e:
             print(f"[decide_kill error] {e}")
             return candidates[0]  # Default vote in case of an error
 
+    def final_words(self, game_log: str, cause_of_death: str) -> str:
+        system_prompt = self._build_system_prompt()
+
+        user_prompt = (
+            f"You are {self.player_name}. You have just been eliminated from the game.\n"
+            f"You were a **{self.role}** and you were {'voted out by the town during the day' if cause_of_death == 'vote' else 'killed by the mafia during the night'}.\n"
+        )
+
+        if self.role == "detective":
+            if self.investigations:
+                user_prompt += "\nHere are the investigation results you gathered during the game:\n"
+                user_prompt += "\n".join(self.investigations) + "\n"
+            else:
+                user_prompt += "\nYou had not completed any investigations yet.\n"
+            user_prompt += "Now, give your final words. Share your discoveries and suspicions to help the civilians win.\n"
+
+        elif self.role in ["mafia", "don"]:
+            if hasattr(self, "mafia_kill_targets") and self.mafia_kill_targets:
+                user_prompt += "\nHere are the players you voted to kill during the night:\n"
+                user_prompt += "\n".join(
+                    [f"Night {i + 1}: Targeted {target}" for i, target in enumerate(self.mafia_kill_targets)]) + "\n"
+            else:
+                user_prompt += "\nYou did not kill any player yet.\n"
+            user_prompt += (
+                "Now that you're out, you must lie to protect the Mafia and confuse the civilians.\n"
+                "Try to cast suspicion on innocent players or mislead them about your role.\n"
+            )
+
+        else:  # Civilian
+            user_prompt += (
+                "You were an innocent civilian.\n"
+                "Now that you're gone, give your final thoughts to help your team.\n"
+                "Mention who you suspected or anything strange you noticed.\n"
+            )
+
+        user_prompt += (
+            "\nReturn your final words in 2–4 sentences. Be sincere, persuasive, emotional, or cryptic as you wish.\n"
+            "Do not restate your role or how you died. Just speak your mind.\n"
+        )
+
+        final_statement = self._call_llm(system_prompt, user_prompt)
+        return final_statement.strip()

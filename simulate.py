@@ -17,9 +17,5 @@ with open("results.json", "w") as json_file:
     json.dump(mafia_game.game_data, json_file, indent=4)
 
 
-
-
-# To add last say after dying
-
-# To provide the way that each player died previously during voting and some strategies for the players.
+# don finds detective
 # Joseph to test why claude and deepseek are not following orders.

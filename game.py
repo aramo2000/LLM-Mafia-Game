@@ -180,8 +180,10 @@ class MafiaGame:
                 }
 
         self.alive[final_target] = False
+        self.players[final_target].status = "dead"
+        final_words = self.players[final_target].final_words(self.game_log, cause_of_death="mafia")
         self.game_log += f"\nNight {self.night_count}: Mafia killed player_{final_target}"
-        self.players[final_target].status = "dead"  # Update player status to "dead"
+        self.game_log += f"\nFinal words from player_{final_target}: {final_words}"
 
         # Add the mafia's internal thinking (reason) to the game log
         if hasattr(self, "game_data"):
@@ -206,7 +208,11 @@ class MafiaGame:
                 "mafia_kill": f"player_{final_target}",
                 "detective_investigation": investigation_result or {},
                 "mafia_reasons": mafia_reasons,  # Store mafia's internal thoughts/reasoning for analysis
-                "detective_thinking": detective_thinking  # Store detective's internal reasoning
+                "detective_thinking": detective_thinking,  # Store detective's internal reasoning
+                "final_words": {
+                    "player_id": f"player_{final_target}",
+                    "words": final_words
+                }
             })
 
 
@@ -280,9 +286,16 @@ class MafiaGame:
             self.game_data["game_details"]["game_log"][-1]["elimination"] = "no elimination this round"
         else:
             self.alive[most_votes_player] = False
+            self.players[most_votes_player].status = "dead"
+            final_words = self.players[most_votes_player].final_words(self.game_log, cause_of_death="vote")
             self.game_log += f"\nDay: player_{most_votes_player} was voted out by the town/players of the game"
-            self.players[most_votes_player].status = "dead"  # Update player status to "dead"
+            self.game_log += f"\nFinal words from player_{most_votes_player}: {final_words}"
+            # Log in JSON
             self.game_data["game_details"]["game_log"][-1]["elimination"] = f"player_{most_votes_player} was voted out"
+            self.game_data["game_details"]["game_log"][-1]["final_words"] = {
+                "player_id": f"player_{most_votes_player}",
+                "words": final_words
+            }
 
     def check_win_condition(self):
         alive_roles = [self.roles[i] for i in self.get_alive_players()]
