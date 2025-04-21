@@ -16,6 +16,4 @@ else:
 with open("results.json", "w") as json_file:
     json.dump(mafia_game.game_data, json_file, indent=4)
 
-
-# don finds detective
-# Joseph to test why claude and deepseek are not following orders.
+# Joseph to test why claude and deepseek are not following orders from prompts.

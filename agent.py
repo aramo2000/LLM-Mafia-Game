@@ -19,6 +19,7 @@ class Agent:
         self.mafia_thinking = []  # To store the internal reasons for the mafia kill decisions
         self.detective_thinking = []  # To store detective reasoning
         self.mafia_kill_targets = []
+        self.don_guesses = []
 
         if self.role in ["mafia", "don"]:
             self.mafia_players = [f"player_{i}" for i in mafia_player_indices]
@@ -116,16 +117,18 @@ class Agent:
         investigation_history = ""
         if self.role == "detective" and self.investigations:
             investigation_history = "Here is your investigation history:\n" + "\n".join(self.investigations) + "\n"
+        if self.role in ["mafia","don"] and self.don_guesses:
+            investigation_history = "Here the insight from don's investigation until now:\n " + "\n".join(self.don_guesses) + "\n"
 
         user_prompt = (
             f"Here is what happened in the game so far:\n{game_log}\n\n"
-            f"{investigation_history}"
             f"As {self.player_name} (role: {self.role}), please express your thoughts and suspicions about who could be Mafia. "
+            f"{investigation_history}"
             "Use the information from the game of how a player died to assess how many Mafia could still be alive.\n"
             "Note: Mafia are only eliminated through DAY voting, not during the night.\n"
             "You must reason about whether it's safe to vote or not. If Mafia reach parity (equal number as civilians), they win immediately.\n"
             "Consider your role and any relevant interactions you've had. Your reason should be logical and persuasive.\n"
-            "Return only your statement.The statement should be brief and not exceed 3-4 sentences in length to keep it concise.\n"
+            "Return only your statement. The statement should be brief and not exceed 3-4 sentences in length to keep it concise.\n"
         )
         statement = self._call_llm(system_prompt, user_prompt)
         self.statements.append({
@@ -137,11 +140,17 @@ class Agent:
     def vote_day(self, game_log: str, nominees: list[int], past_votes: str = "") -> tuple:
         nominee_names = [f"player_{i}" for i in nominees]
         system_prompt = self._build_system_prompt()
+        investigation_history = ""
+        if self.role == "detective" and self.investigations:
+            investigation_history = "Here is your investigation history:\n" + "\n".join(self.investigations) + "\n"
+        if self.role in ["mafia","don"] and self.don_guesses:
+            investigation_history = "Here the insight from don's investigation until now:\n " + "\n".join(self.don_guesses) + "\n"
         user_prompt = (
             f"Here is what happened in the game so far:\n{game_log}\n\n"
             f"The following players are nominated for elimination: {', '.join(nominee_names)}.\n"
             f"Past votes and reasons:\n{past_votes}\n\n"
             "Choose who you want to eliminate or vote for no one.\n"
+            f"{investigation_history}"
             "Use the information from the game of how a player died to assess how many Mafia could still be alive.\n"
             "Note: Mafia are only eliminated through DAY voting, not during the night.\n"
             "You must reason about whether it's safe to vote or not. If Mafia reach parity (equal number as civilians), they win immediately.\n"
@@ -230,6 +239,48 @@ class Agent:
             print(f"[investigate error] {e}")
             return random.choice(possible_targets)  # Default choice in case of an error
 
+    def don_guess_detective(self, game_log: str, alive_players: list[int], current_night: int = 1) -> tuple:
+        possible_targets = [p for p in alive_players if
+                            f"player_{p}" != self.player_name and f"player_{p}" not in self.mafia_players]
+        system_prompt = self._build_system_prompt()
+        if current_night > 1 and self.don_guesses:
+            history = "\n".join(
+                f"Night {entry['night']}: Guessed {entry['guessed_player']} → "
+                f"{'Detective' if entry['is_detective'] else 'Not Detective'}"
+                for entry in self.don_guesses
+            )
+            user_prompt += f"\n\nHere is your past guessing history:\n{history}\n"
+
+        user_prompt = (
+            f"Here is what happened in the game so far:\n{game_log}\n\n"
+            "You are the **Mafia Don**. Tonight, you may try to identify who the Detective is.\n"
+            f"The following players are alive and not part of the Mafia: {', '.join(f'player_{i}' for i in possible_targets)}\n"
+            "Your task is to guess which one might be the Detective, if you haven't guessed already."
+        )
+        if current_night > 1:
+            user_prompt += (
+                "\n\nNote: Return your guess and provide your internal reason.\n"
+                "Format your response as follows:\n"
+                "- First, provide the player ID you suspect is the Detective in the format: 'player_#'\n"
+                "- Then, on the next line, provide your internal reason for suspecting them in 2–3 sentences.\n"
+                "Example:\n"
+                "player_5\nThey have been subtly guiding discussions without drawing attention, which feels like detective behavior.\n"
+            )
+        else:
+            user_prompt += (
+                "\n\nNote: This is the first night. Just return your guess. Format: 'player_#'\n"
+            )
+        response = self._call_llm(system_prompt, user_prompt)
+        try:
+            lines = response.strip().split("\n", 1)
+            guessed_player = int(lines[0].replace("player_", "").strip())
+            reason = lines[1].strip() if len(lines) > 1 else "No reason provided"
+            return guessed_player, reason
+        except Exception as e:
+            print(f"[don_guess_detective error] {e}")
+            fallback = random.choice(possible_targets)
+            return fallback, "Fallback guess due to parsing error."
+
     def decide_kill(self, game_log: str, candidates: list[int], mafia_votes: list[tuple] = None, current_night: int = 1) -> int:
         possible_targets = [f"player_{i}" for i in candidates]
         system_prompt = self._build_system_prompt()
@@ -237,8 +288,15 @@ class Agent:
             f"Here is what happened in the game so far:\n{game_log}\n\n"
             f"As part of the mafia, you must choose who to kill tonight.\n"
             f"Candidates: {', '.join(possible_targets)}\n"
-            "Return only their name in this format: player_#"
         )
+        if hasattr(self, "latest_don_guess") and self.latest_don_guess:
+            guess_info = self.latest_don_guess
+            user_prompt += (
+                f"\n\n[Don's Suspicion Info]\n"
+                f"The Don guessed that {guess_info['guessed_player']} is the Detective.\n"
+                f"Result: {'Yes' if guess_info['is_detective'] else 'No'}.\n"
+                "Use this information to help you decide whom to eliminate tonight.\n"
+            )
 
         if mafia_votes:
             vote_summary = "Mafia votes:\n" + "\n".join([f"player_{voter} voted for player_{target}" for voter, target in mafia_votes])
@@ -254,6 +312,10 @@ class Agent:
                 "Example response:\n"
                 "player_4\nThis player is avoiding suspicion and staying quiet, which makes them seem suspicious.\n"
                 "Make sure to follow the format exactly to avoid confusion.\n"
+            )
+        else:
+            user_prompt += (
+                "Return only their name in this format: player_#"
             )
 
         response = self._call_llm(system_prompt, user_prompt)

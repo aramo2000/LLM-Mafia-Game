@@ -122,6 +122,39 @@ class MafiaGame:
         alive_mafia = [i for i in alive_players if self.roles[i] in ["mafia", "don"]]
         alive_civilians = [i for i in alive_players if self.roles[i] not in ["mafia", "don"]]
 
+        # Don's suspicion (Detective finder)
+        don_guess_info = None
+        don_index = next((i for i in alive_players if self.roles[i] == "don"), None)
+        if don_index is not None:
+            guess_index, reason = self.players[don_index].don_guess_detective(
+                self.game_log, alive_players, current_night=self.night_count
+            )
+            actual_detective_index = next((i for i, r in enumerate(self.roles) if r == "detective"), None)
+            is_detective = (guess_index == actual_detective_index)
+            don_guess_info = {
+                "night": self.night_count,
+                "don_id": self.players[don_index].player_name,
+                "guessed_player": f"player_{guess_index}",
+                "is_detective": is_detective,
+                "reason": reason if self.night_count > 1 else None
+            }
+            if "don_guesses" not in self.game_data["game_details"]:
+                self.game_data["game_details"]["don_guesses"] = []
+            # Store full version in JSON (for post-game review)
+            self.game_data["game_details"]["don_guesses"].append({
+                "night": self.night_count,
+                "don_id": don_guess_info["don_id"],
+                "guessed_player": don_guess_info["guessed_player"],
+                "is_detective": don_guess_info["is_detective"],
+                "reason": don_guess_info["reason"]
+            })
+            # Share result only (no reason) with other mafia
+            n =  don_guess_info["night"]
+            guessedP = don_guess_info["guessed_player"]
+            is_det = don_guess_info["is_detective"]
+            for i in alive_mafia:
+                self.players[i].don_guesses.append(f"night: {n} - guessed_player_{guessedP} - is_detective? {is_det}")
+
         mafia_votes = []
         # Mafia members vote
         for i in alive_mafia:
