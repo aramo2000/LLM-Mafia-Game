@@ -16,6 +16,9 @@ class Agent:
         self.votes = []
         self.statements = []
         self.investigations = []
+        self.mafia_thinking = []  # To store the internal reasons for the mafia kill decisions
+        self.detective_thinking = []  # To store detective reasoning
+
 
         if self.role in ["mafia", "don"]:
             self.mafia_players = [f"player_{i}" for i in mafia_player_indices]
@@ -23,6 +26,7 @@ class Agent:
         else:
             self.mafia_players = []
             self.don = None
+
 
     def get_player_info(self):
         # Return a dictionary with the player's information
@@ -39,7 +43,6 @@ class Agent:
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
             ]
-
             input_tokens = count_openai_input_tokens(messages, model=config.OPENAI_MODEL)
             llm_response = config.OPENAI_CLIENT.chat.completions.create(
                 model=config.OPENAI_MODEL,
@@ -48,12 +51,54 @@ class Agent:
             )
             output_text = llm_response.choices[0].message.content.strip()
             output_tokens = count_openai_output_tokens(output_text, model=config.OPENAI_MODEL)
-
             self.input_tokens_used += input_tokens
             self.output_tokens_used += output_tokens
-            return output_text
+
+        elif self.llm_name == "gemini":
+            chat = config.GEMINI_MODEL.start_chat()
+            response = chat.send_message(system_prompt + "\n\n" + user_prompt)
+            output_text = response.text.strip() if hasattr(response, "text") else ""
+
+        elif self.llm_name == "deepseek":
+            llm_response = config.DEEPSEEK_CLIENT.chat.completions.create(
+                model=config.DEEPSEEK_MODEL,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ],
+                temperature=0.3,
+            )
+            output_text = llm_response.choices[0].message.content.strip()
+
+        elif self.llm_name== "claude":
+            llm_response = config.CLAUDE_CLIENT.messages.create(
+                model=config.CLAUDE_MODEL,
+                system=system_prompt,
+                messages=[
+                    {"role": "user", "content": user_prompt}
+                ],
+                max_tokens=256,
+                temperature=0.3
+            )
+            print(llm_response.content)
+            output_text = llm_response.content[0].text.strip() if hasattr(llm_response, "content") else ""
+
+        elif self.llm_name == "grok":
+            llm_response = config.GROK_CLIENT.chat.completions.create(
+                model=config.GROK_MODEL,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ],
+                temperature=0.3
+            )
+            output_text = llm_response.choices[0].message.content.strip()
+
         else:
             raise NotImplementedError(f"LLM {self.llm_name} not supported yet.")
+
+        return output_text
+
 
     def _build_system_prompt(self):
         rules = prompts_constants.SYSTEM_PROMPTS["rules"]
@@ -94,8 +139,16 @@ class Agent:
             f"The following players are nominated for elimination: {', '.join(nominee_names)}.\n"
             f"Past votes and reasons:\n{past_votes}\n\n"
             "Choose who you want to eliminate or vote for no one.\n"
-            "First provide the player you want to vote for (or 'no one'). Then provide your reason on the next line.\n"
-            "Format: player_# or 'no one'\n\"Reason\"\n"
+        )
+
+        user_prompt += (
+            "\n\nNote: Return your vote for the player you want to eliminate or 'no one' in case you don't want to vote out anyone, and then provide your internal reason.\n"
+            "Format your response as follows:\n"
+            "- First, provide the player ID you want to vote for in the format: 'player_#', or 'no one' in case you don't want to vote for anyone.\n"
+            "- After that, provide a brief internal reason for why you are choosing this player, in 2-3 sentences.\n"
+            "Example response:\n"
+            "player_4\nThis player is avoiding suspicion and staying quiet, which makes them seem suspicious.\n"
+            "Make sure to follow the format exactly to avoid confusion.\n"
         )
         response = self._call_llm(system_prompt, user_prompt)
 
@@ -128,7 +181,7 @@ class Agent:
             print(f"[vote_day error] {e}")
             return nominees[0], "Fallback vote due to parsing error."
 
-    def investigate(self, game_log: str, alive_players: list[int]) -> int:
+    def investigate(self, game_log: str, alive_players: list[int], current_night: int = 1) -> int:
         possible_targets = [p for p in alive_players if f"player_{p}" != self.player_name]
         system_prompt = self._build_system_prompt()
         user_prompt = (
@@ -138,29 +191,82 @@ class Agent:
             f"Alive players: {', '.join(f'player_{i}' for i in possible_targets)}\n"
             "Return only their name in this format: player_#"
         )
+
+        # Add reasoning for investigation decision
+        if current_night > 1:
+            user_prompt += (
+                "\n\nNote: Return your investigation decision and provide your internal reason.\n"
+                "Format your response as follows:\n"
+                "- First, provide the player ID you want to investigate in the format: 'player_#'\n"
+                "- After that, provide a brief internal reason for why you are choosing this player, in 2-3 sentences.\n"
+                "Example response:\n"
+                "player_4\nThis player has been acting suspicious and avoiding conversations, making them a possible mafia.\n"
+                "Make sure to follow the format exactly to avoid confusion.\n"
+            )
+
         response = self._call_llm(system_prompt, user_prompt)
         try:
-            investigated_player = int(response.replace("player_", "").strip())
-            return investigated_player
-        except:
-            return random.choice(possible_targets)
+            # Split the response into the investigated player and the internal reason
+            lines = response.split("\n", 1)
+            investigated_player = int(lines[0].replace("player_", "").strip())  # Extract player number
+            internal_reason = lines[1].strip() if len(lines) > 1 else "No reason provided"
 
-    def decide_kill(self, game_log: str, candidates: list[int], mafia_votes: list[tuple] = None) -> int:
+            # Store the internal reason for analysis (not visible to others)
+            if current_night > 1:  # Only store reasoning starting from Day 2
+                self.detective_thinking.append({
+                    "player_id": self.player_name,
+                    "investigated_player": investigated_player,
+                    "internal_reason": internal_reason
+                })
+
+            return investigated_player
+        except Exception as e:
+            print(f"[investigate error] {e}")
+            return random.choice(possible_targets)  # Default choice in case of an error
+
+    def decide_kill(self, game_log: str, candidates: list[int], mafia_votes: list[tuple] = None, current_night: int = 1) -> int:
         possible_targets = [f"player_{i}" for i in candidates]
         system_prompt = self._build_system_prompt()
         user_prompt = (
             f"Here is what happened in the game so far:\n{game_log}\n\n"
             f"As part of the mafia, you must choose who to kill tonight.\n"
             f"Candidates: {', '.join(possible_targets)}\n"
-            "Return only one player name in this format: player_#"
+            "Return only their name in this format: player_#"
         )
 
         if mafia_votes:
             vote_summary = "Mafia votes:\n" + "\n".join([f"player_{voter} voted for player_{target}" for voter, target in mafia_votes])
             user_prompt += f"\n\n{vote_summary}\n\nDon, based on these votes, please decide the final target. You are free to choose a player not in the other Mafia votes"
 
+        # Add reasoning for investigation decision only starting from Day 2
+        if current_night > 1:
+            user_prompt += (
+                "\n\nNote: Return your vote for the player you want to eliminate and provide your internal reason.\n"
+                "Format your response as follows:\n"
+                "- First, provide the player ID you want to vote for in the format: 'player_#'\n"
+                "- After that, provide a brief internal reason for why you are choosing this player, in 2-3 sentences. This reason will not be visible to anyone else.\n"
+                "Example response:\n"
+                "player_4\nThis player is avoiding suspicion and staying quiet, which makes them seem suspicious.\n"
+                "Make sure to follow the format exactly to avoid confusion.\n"
+            )
+
         response = self._call_llm(system_prompt, user_prompt)
         try:
-            return int(response.replace("player_", "").strip())
-        except:
-            return candidates[0]
+            # Split the response into vote (player) and internal reason
+            lines = response.split("\n", 1)
+            voted_player = int(lines[0].replace("player_", "").strip())  # Extract player number
+            internal_reason = lines[1].strip() if len(lines) > 1 else "No reason provided"
+
+            # Store the internal reason for analysis (not visible to others)
+            if current_night > 1:  # Only store reasoning starting from Day 2
+                self.mafia_thinking.append({
+                    "player_id": self.player_name,
+                    "vote": voted_player,
+                    "internal_reason": internal_reason
+                })
+
+            return voted_player
+        except Exception as e:
+            print(f"[decide_kill error] {e}")
+            return candidates[0]  # Default vote in case of an error
+

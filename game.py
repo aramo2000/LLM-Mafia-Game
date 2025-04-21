@@ -51,6 +51,56 @@ class MafiaGame:
         }
         self._initialize_players()
 
+    @classmethod
+    def from_llm_list(cls, llm_names: list[str]):
+        num_players = len(llm_names)
+        assert num_players == 10, "This game currently supports exactly 10 players."
+
+        roles = ["civilian"] * 6 + ["detective"] + ["mafia"] * 2 + ["don"]
+        random.shuffle(roles)
+
+        mafia_indices = [i for i, role in enumerate(roles) if role == "mafia"]
+        don_index = next(i for i, role in enumerate(roles) if role == "don")
+
+        players = []
+        for i in range(num_players):
+            role = roles[i]
+            llm = llm_names[i]
+            if role in ["mafia", "don"]:
+                agent = Agent(
+                    llm_name=llm,
+                    player_name=f"player_{i}",
+                    player_role=role,
+                    mafia_player_indices=mafia_indices,
+                    don_index=don_index
+                )
+            else:
+                agent = Agent(
+                    llm_name=llm,
+                    player_name=f"player_{i}",
+                    player_role=role,
+                    mafia_player_indices=[]
+                )
+            players.append(agent)
+
+        # Create instance using existing constructor with a dummy llm_name
+        game = cls(llm_name="default_llm")
+
+        # Override the auto-generated values
+        game.players = players
+        game.roles = roles
+        game.num_players = num_players
+        game.alive = [True] * num_players
+
+        mafia_players = [player.player_name for player in players if player.role in ["mafia", "don"]]
+        detective_player = next((player.player_name for player in players if player.role == "detective"), None)
+
+        game.game_data["game_details"]["players"] = [player.get_player_info() for player in players]
+        game.game_data["game_details"]["mafia_players"] = mafia_players
+        game.game_data["game_details"]["detective_player"] = detective_player
+
+        return game
+
     def _initialize_players(self):
         # Initialize player details for the game
         for i, player in enumerate(self.players):
@@ -73,10 +123,9 @@ class MafiaGame:
         alive_civilians = [i for i in alive_players if self.roles[i] not in ["mafia", "don"]]
 
         mafia_votes = []
-
         # Mafia members vote
         for i in alive_mafia:
-            vote = self.players[i].decide_kill(self.game_log, alive_players)
+            vote = self.players[i].decide_kill(self.game_log, alive_players, current_night=self.night_count)
             mafia_votes.append((i, vote))
 
         # Decide final target
@@ -86,7 +135,8 @@ class MafiaGame:
             final_target = self.players[don_index].decide_kill(
                 self.game_log,
                 alive_players,
-                mafia_votes=mafia_votes  # Pass mafia votes to Don
+                mafia_votes=mafia_votes,  # Pass mafia votes to Don
+                current_night = self.night_count
             )
         else:
             # Mafia majority vote logic
@@ -101,8 +151,9 @@ class MafiaGame:
         # Detective investigates
         detective_index = next((i for i in alive_players if self.roles[i] == "detective"), None)
         investigation_result = None
+        detective_thinking = None
         if detective_index is not None:
-            investigate_target = self.players[detective_index].investigate(self.game_log, alive_players)
+            investigate_target = self.players[detective_index].investigate(self.game_log, alive_players, current_night=self.night_count)
             is_mafia = self.roles[investigate_target] in ["mafia", "don"]
             self.players[detective_index].investigations.append(
                 f"player_{investigate_target} - Mafia: {is_mafia}"
@@ -114,19 +165,50 @@ class MafiaGame:
                 }
             }
 
+            # Capture the detective's internal reasoning
+            if self.players[detective_index].detective_thinking:  # Only access if list is not empty
+                detective_thinking = {
+                    "player_id": self.players[detective_index].player_name,
+                    "investigated_player": f"player_{investigate_target}",
+                    "internal_reason": self.players[detective_index].detective_thinking[-1]["internal_reason"]
+                }
+            else:
+                detective_thinking = {
+                    "player_id": self.players[detective_index].player_name,
+                    "investigated_player": f"player_{investigate_target}",
+                    "internal_reason": "No reasoning provided yet."
+                }
+
         self.alive[final_target] = False
         self.game_log += f"\nNight {self.night_count}: Mafia killed player_{final_target}"
         self.players[final_target].status = "dead"  # Update player status to "dead"
 
-        # Optional: update game_data["game_log"] if you're logging JSON format
+        # Add the mafia's internal thinking (reason) to the game log
         if hasattr(self, "game_data"):
+            # Collect mafia reasoning
+            mafia_reasons = []
+            for mafia_player, vote in mafia_votes:
+                if hasattr(self.players[mafia_player], 'mafia_thinking') and self.players[mafia_player].mafia_thinking:
+                    mafia_reasons.append({
+                        "player_id": self.players[mafia_player].player_name,
+                        "vote": f"player_{vote}",
+                        "reason": self.players[mafia_player].mafia_thinking[-1]["internal_reason"]
+                    })
+                else:
+                    mafia_reasons.append({
+                        "player_id": self.players[mafia_player].player_name,
+                        "vote": f"player_{vote}",
+                        "reason": "No reasoning provided yet."
+                    })
+
             self.game_data["game_details"]["game_log"].append({
                 "night": self.night_count,
                 "mafia_kill": f"player_{final_target}",
-                "detective_investigation": investigation_result or {}
+                "detective_investigation": investigation_result or {},
+                "mafia_reasons": mafia_reasons,  # Store mafia's internal thoughts/reasoning for analysis
+                "detective_thinking": detective_thinking  # Store detective's internal reasoning
             })
 
-    import random
 
     def day_phase(self):
         self.day_count += 1
@@ -235,7 +317,7 @@ class MafiaGame:
         print("\n--- Game Over ---")
 
         # Save the game data to a JSON file
-        with open('game_results.json', 'w') as json_file:
+        with open('gemini_only.json', 'w') as json_file:
             # Ensure player status is updated (alive or dead) before saving
             for i, player in enumerate(self.players):
                 # Update the player's status based on whether they're alive or dead
