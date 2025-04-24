@@ -250,12 +250,8 @@ class Agent:
             "Your task is to guess which one might be the Detective, if you haven't guessed already."
         )
         if current_night > 1 and self.don_guesses:
-            history = "\n".join(
-                f"Night {entry['night']}: Guessed {entry['guessed_player']} → "
-                f"{'Detective' if entry['is_detective'] else 'Not Detective'}"
-                for entry in self.don_guesses
-            )
-            user_prompt += f"\n\nHere is your past guessing history:\n{history}\n"
+            history ="\n".join(self.don_guesses) + "\n"
+            user_prompt += f"\n\nHere is your past guessing history:{history}"
 
         if current_night > 1:
             user_prompt += (
