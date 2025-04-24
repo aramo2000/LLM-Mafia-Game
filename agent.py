@@ -243,6 +243,12 @@ class Agent:
         possible_targets = [p for p in alive_players if
                             f"player_{p}" != self.player_name and f"player_{p}" not in self.mafia_players]
         system_prompt = self._build_system_prompt()
+        user_prompt = (
+            f"Here is what happened in the game so far:\n{game_log}\n\n"
+            "You are the **Mafia Don**. Tonight, you may try to identify who the Detective is.\n"
+            f"The following players are alive and not part of the Mafia: {', '.join(f'player_{i}' for i in possible_targets)}\n"
+            "Your task is to guess which one might be the Detective, if you haven't guessed already."
+        )
         if current_night > 1 and self.don_guesses:
             history = "\n".join(
                 f"Night {entry['night']}: Guessed {entry['guessed_player']} → "
@@ -251,12 +257,6 @@ class Agent:
             )
             user_prompt += f"\n\nHere is your past guessing history:\n{history}\n"
 
-        user_prompt = (
-            f"Here is what happened in the game so far:\n{game_log}\n\n"
-            "You are the **Mafia Don**. Tonight, you may try to identify who the Detective is.\n"
-            f"The following players are alive and not part of the Mafia: {', '.join(f'player_{i}' for i in possible_targets)}\n"
-            "Your task is to guess which one might be the Detective, if you haven't guessed already."
-        )
         if current_night > 1:
             user_prompt += (
                 "\n\nNote: Return your guess and provide your internal reason.\n"
