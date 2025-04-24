@@ -1,4 +1,5 @@
 import random
+import re
 from typing import List
 import config
 import prompts_constants
@@ -67,7 +68,7 @@ class Agent:
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
                 ],
-                temperature=0.3,
+                temperature=0.000000000001,
             )
             output_text = llm_response.choices[0].message.content.strip()
 
@@ -81,7 +82,6 @@ class Agent:
                 max_tokens=256,
                 temperature=0.3
             )
-            print(llm_response.content)
             output_text = llm_response.content[0].text.strip() if hasattr(llm_response, "content") else ""
 
         elif self.llm_name == "grok":
@@ -156,20 +156,29 @@ class Agent:
             "You must reason about whether it's safe to vote or not. If Mafia reach parity (equal number as civilians), they win immediately.\n"
         )
 
-        user_prompt += (
-            "\n\nNote: Return your vote for the player you want to eliminate or 'no one' in case you don't want to vote out anyone, and then provide your internal reason.\n"
-            "Format your response as follows:\n"
-            "- First, provide the player ID you want to vote for in the format: 'player_#', or 'no one' in case you don't want to vote for anyone.\n"
-            "- After that, provide a brief internal reason for why you are choosing this player, in 2-3 sentences.\n"
-            "Example response:\n"
-            "player_4\nThis player is avoiding suspicion and staying quiet, which makes them seem suspicious.\n"
-            "Make sure to follow the format exactly to avoid confusion.\n"
-        )
+        user_prompt += """
+            \n\nNote: Return your vote for the player you want to eliminate or 'no one' in case you don't want to vote out anyone, and then provide your internal reason.
+            Format your response as follows:
+            - First, provide the player ID you want to vote for in the format: 'player_#', or 'no one' in case you don't want to vote for anyone.
+            - After that, provide a brief internal reason for why you are choosing this player, in 2-3 sentences.
+            
+            Example response:
+            player_#
+            short vote reasoning...
+            
+            YOU MUST RESPOND WITH THE EXAMPLE FORMAT, IF YOUR RESPONSE IS NOT ACCORDING TO THE EXAMPLE THEN YOU WILL FAIL YOUR TASK"""
+
         response = self._call_llm(system_prompt, user_prompt)
 
         try:
             lines = response.split("\n", 1)
-            vote_choice = lines[0].strip()
+
+            vote_choice = int(re.search(r'\d+', response).group()) if re.search(r'\d+', response) else None
+            if vote_choice:
+                vote_choice = f"player_{vote_choice}"
+            else:
+                vote_choice = "no one"
+            # vote_choice = lines[0].strip()
             reason = lines[1].strip() if len(lines) > 1 else "No reason provided"
 
             self.votes.append({
@@ -204,26 +213,32 @@ class Agent:
             "You are the Detective. Choose one player to investigate tonight.\n"
             f"The investigation you did so far: \n{self.investigations}"
             f"Alive players: {', '.join(f'player_{i}' for i in possible_targets)}\n"
-            "Return only their name in this format: player_#"
         )
 
         # Add reasoning for investigation decision
         if current_night > 1:
-            user_prompt += (
-                "\n\nNote: Return your investigation decision and provide your internal reason.\n"
-                "Format your response as follows:\n"
-                "- First, provide the player ID you want to investigate in the format: 'player_#'\n"
-                "- After that, provide a brief internal reason for why you are choosing this player, in 2-3 sentences.\n"
-                "Example response:\n"
-                "player_4\nThis player has been acting suspicious and avoiding conversations, making them a possible mafia.\n"
-                "Make sure to follow the format exactly to avoid confusion.\n"
-            )
+            user_prompt += """\n\nNote: Return your guess and provide your internal reason.
+                Format your response as follows:
+                - First, provide the player ID you suspect is the Detective in the format: 'player_#'
+                - Then, on the next line, provide your internal reason for suspecting them in 2–3 sentences.
+                
+                Example response:
+                player_#
+                short vote reasoning...
+                
+                YOU MUST RESPOND WITH THE EXAMPLE FORMAT, IF YOUR RESPONSE IS NOT ACCORDING TO THE EXAMPLE THEN YOU WILL FAIL YOUR TASK"""
+        else:
+            user_prompt += """Example response:
+                player_#
+                
+                YOU MUST RESPOND WITH THE EXAMPLE FORMAT, IF YOUR RESPONSE IS NOT ACCORDING TO THE EXAMPLE THEN YOU WILL FAIL YOUR TASK"""
 
         response = self._call_llm(system_prompt, user_prompt)
         try:
             # Split the response into the investigated player and the internal reason
             lines = response.split("\n", 1)
-            investigated_player = int(lines[0].replace("player_", "").strip())  # Extract player number
+            investigated_player = int(re.search(r'\d+', response).group()) if re.search(r'\d+', response) else None
+            # investigated_player = int(lines[0].replace("player_", "").strip())  # Extract player number
             internal_reason = lines[1].strip() if len(lines) > 1 else "No reason provided"
 
             # Store the internal reason for analysis (not visible to others)
@@ -254,22 +269,29 @@ class Agent:
             user_prompt += f"\n\nHere is your past guessing history:{history}"
 
         if current_night > 1:
-            user_prompt += (
-                "\n\nNote: Return your guess and provide your internal reason.\n"
-                "Format your response as follows:\n"
-                "- First, provide the player ID you suspect is the Detective in the format: 'player_#'\n"
-                "- Then, on the next line, provide your internal reason for suspecting them in 2–3 sentences.\n"
-                "Example:\n"
-                "player_5\nThey have been subtly guiding discussions without drawing attention, which feels like detective behavior.\n"
-            )
+            user_prompt += """\n\nNote: Return your guess and provide your internal reason.
+                Format your response as follows:
+                - First, provide the player ID you suspect is the Detective in the format: 'player_#'
+                - Then, on the next line, provide your internal reason for suspecting them in 2–3 sentences.
+                
+                Example response:
+                player_#
+                choice reasoning...
+                
+                YOU MUST RESPOND WITH THE EXAMPLE FORMAT."""
         else:
-            user_prompt += (
-                "\n\nNote: This is the first night. Just return your guess. Format: 'player_#'\n"
-            )
+            user_prompt +="""\n\nNote: This is the first night. Just return your guess.
+            
+            Example response:
+            player_#
+            
+            YOU MUST RESPOND WITH THE EXAMPLE FORMAT."""
+
         response = self._call_llm(system_prompt, user_prompt)
         try:
             lines = response.strip().split("\n", 1)
-            guessed_player = int(lines[0].replace("player_", "").strip())
+            guessed_player = int(re.search(r'\d+', response).group()) if re.search(r'\d+', response) else None
+            # guessed_player = int(lines[0].replace("player_", "").strip())
             reason = lines[1].strip() if len(lines) > 1 else "No reason provided"
             return guessed_player, reason
         except Exception as e:
@@ -300,25 +322,29 @@ class Agent:
 
         # Add reasoning for investigation decision only starting from Day 2
         if current_night > 1:
-            user_prompt += (
-                "\n\nNote: Return your vote for the player you want to eliminate and provide your internal reason.\n"
-                "Format your response as follows:\n"
-                "- First, provide the player ID you want to vote for in the format: 'player_#'\n"
-                "- After that, provide a brief internal reason for why you are choosing this player, in 2-3 sentences. This reason will not be visible to anyone else.\n"
-                "Example response:\n"
-                "player_4\nThis player is avoiding suspicion and staying quiet, which makes them seem suspicious.\n"
-                "Make sure to follow the format exactly to avoid confusion.\n"
-            )
+            user_prompt +="""
+                \n\nNote: Return your vote for the player you want to eliminate and provide your internal reason.\n
+                Format your response as follows:\n
+                - First, provide the player ID you want to vote for in the format: 'player_#'\n"
+                - After that, provide a brief internal reason for why you are choosing this player, in 2-3 sentences. This reason will not be visible to anyone else.\n"
+                
+                Example response:
+                player_#
+                vote reasoning...
+                
+                YOU MUST RESPOND WITH THE EXAMPLE FORMAT."""
         else:
-            user_prompt += (
-                "Return only their name in this format: player_#"
-            )
+            user_prompt +="""Example response:
+                player_#
+                
+                YOU MUST RESPOND WITH THE EXAMPLE FORMAT."""
 
         response = self._call_llm(system_prompt, user_prompt)
         try:
             # Split the response into vote (player) and internal reason
             lines = response.split("\n", 1)
-            voted_player = int(lines[0].replace("player_", "").strip())  # Extract player number
+            voted_player = int(re.search(r'\d+', response).group()) if re.search(r'\d+', response) else None
+            # voted_player = int(lines[0].replace("player_", "").strip())  # Extract player number
             internal_reason = lines[1].strip() if len(lines) > 1 else "No reason provided"
 
             # Store the internal reason for analysis (not visible to others)
