@@ -59,9 +59,13 @@ class Agent:
             self.output_tokens_used += output_tokens
 
         elif self.llm_name == "gemini":
-            chat = config.GEMINI_MODEL.start_chat()
-            response = chat.send_message(system_prompt + "\n\n" + user_prompt)
-            output_text = response.text.strip() if hasattr(response, "text") else ""
+            prompt = system_prompt + "\n\n" + user_prompt
+            llm_response = config.GEMINI_CLIENT.models.generate_content(
+                model=config.GEMINI_MODEL,
+                contents=prompt,
+                config=config.GEMINI_CONFIG,
+            )
+            output_text = llm_response.text.strip() if hasattr(llm_response, "text") else ""
 
         elif self.llm_name == "deepseek":
             llm_response = config.DEEPSEEK_CLIENT.chat.completions.create(
