@@ -5,7 +5,7 @@ import random
 allSame = False
 
 if allSame:
-    mafia_game = MafiaGame("deepseek") #openai/gemini/grok working    -    claude/deepseek not working as expected with the prompts
+    mafia_game = MafiaGame("openai") #openai/gemini/grok working    -    claude/deepseek not working as expected with the prompts
     mafia_game.run()
 else:
     llm_names = 2 * ["openai"] + 2 * ["gemini"] + 2 * ["grok"] + 2 * ["claude"] + 2 * ["deepseek"]

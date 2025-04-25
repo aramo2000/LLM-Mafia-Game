@@ -363,7 +363,7 @@ class MafiaGame:
         print("\n--- Game Over ---")
 
         # Save the game data to a JSON file
-        with open('gemini_only.json', 'w') as json_file:
+        with open('game_result.json', 'w') as json_file:
             # Ensure player status is updated (alive or dead) before saving
             for i, player in enumerate(self.players):
                 # Update the player's status based on whether they're alive or dead
@@ -375,6 +375,7 @@ class MafiaGame:
                 # Add player status, role, and LLM name to the final data
                 self.game_data["game_details"]["players"][i]["status"] = player.status
                 self.game_data["game_details"]["players"][i]["llm_name"] = player.llm_name
+                self.game_data["game_details"]["players"][i]["opinion_speech_generation_durations"] = player.opinion_speech_generation_durations
 
             # Write the updated game data to the JSON file
             json.dump(self.game_data, json_file, indent=4)

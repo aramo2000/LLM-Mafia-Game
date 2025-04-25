@@ -1,5 +1,6 @@
 import random
 import re
+import time
 from typing import List
 import config
 import prompts_constants
@@ -21,6 +22,7 @@ class Agent:
         self.detective_thinking = []  # To store detective reasoning
         self.mafia_kill_targets = []
         self.don_guesses = []
+        self.opinion_speech_generation_durations = []
 
         if self.role in ["mafia", "don"]:
             self.mafia_players = [f"player_{i}" for i in mafia_player_indices]
@@ -130,7 +132,10 @@ class Agent:
             "Consider your role and any relevant interactions you've had. Your reason should be logical and persuasive.\n"
             "Return only your statement. The statement should be brief and not exceed 3-4 sentences in length to keep it concise.\n"
         )
+        start_time = time.time()
         statement = self._call_llm(system_prompt, user_prompt)
+        end_time = time.time()
+        self.opinion_speech_generation_durations.append(end_time - start_time)
         self.statements.append({
             "player_id": self.player_name,
             "statement": statement
