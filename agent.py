@@ -179,40 +179,27 @@ class Agent:
 
         response = self._call_llm(system_prompt, user_prompt)
 
-        try:
-            lines = response.split("\n", 1)
+        lines = response.split("\n", 1)
+        vote_choice = int(re.search(r'\d+', response).group()) if re.search(r'\d+', response) else None
+        if vote_choice:
+            vote_choice = f"player_{vote_choice}"
+        else:
+            vote_choice = "no one"
+        # vote_choice = lines[0].strip()
+        reason = lines[1].strip() if len(lines) > 1 else "No reason provided"
 
-            vote_choice = int(re.search(r'\d+', response).group()) if re.search(r'\d+', response) else None
-            if vote_choice:
-                vote_choice = f"player_{vote_choice}"
-            else:
-                vote_choice = "no one"
-            # vote_choice = lines[0].strip()
-            reason = lines[1].strip() if len(lines) > 1 else "No reason provided"
+        self.votes.append({
+            "player_id": self.player_name,
+            "vote": vote_choice,
+            "reason": reason
+        })
 
-            self.votes.append({
-                "player_id": self.player_name,
-                "vote": vote_choice,
-                "reason": reason
-            })
+        if vote_choice.lower() == "no one":
+            return -1, reason
 
-            if vote_choice.lower() == "no one":
-                return -1, reason
+        voted_player = int(vote_choice.replace("player_", "").strip())
+        return voted_player, reason
 
-            if vote_choice.lower().startswith("player_"):
-                try:
-                    voted_player = int(vote_choice.replace("player_", "").strip())
-                    return voted_player, reason
-                except ValueError:
-                    print(f"[vote_day error] Invalid player format: {vote_choice}")
-                    return nominees[0], reason
-            else:
-                print(f"[vote_day error] Invalid vote format: {vote_choice}")
-                return nominees[0], reason
-
-        except Exception as e:
-            print(f"[vote_day error] {e}")
-            return nominees[0], "Fallback vote due to parsing error."
 
     def investigate(self, game_log: str, alive_players: list[int], current_night: int = 1) -> int:
         possible_targets = [p for p in alive_players if f"player_{p}" != self.player_name]
@@ -243,25 +230,23 @@ class Agent:
                 YOU MUST RESPOND WITH THE EXAMPLE FORMAT, IF YOUR RESPONSE IS NOT ACCORDING TO THE EXAMPLE THEN YOU WILL FAIL YOUR TASK"""
 
         response = self._call_llm(system_prompt, user_prompt)
-        try:
-            # Split the response into the investigated player and the internal reason
-            lines = response.split("\n", 1)
-            investigated_player = int(re.search(r'\d+', response).group()) if re.search(r'\d+', response) else None
-            # investigated_player = int(lines[0].replace("player_", "").strip())  # Extract player number
-            internal_reason = lines[1].strip() if len(lines) > 1 else "No reason provided"
 
-            # Store the internal reason for analysis (not visible to others)
-            if current_night > 1:  # Only store reasoning starting from Day 2
-                self.detective_thinking.append({
-                    "player_id": self.player_name,
-                    "investigated_player": investigated_player,
-                    "internal_reason": internal_reason
-                })
+        # Split the response into the investigated player and the internal reason
+        lines = response.split("\n", 1)
+        investigated_player = int(re.search(r'\d+', response).group()) if re.search(r'\d+', response) else None
+        # investigated_player = int(lines[0].replace("player_", "").strip())  # Extract player number
+        internal_reason = lines[1].strip() if len(lines) > 1 else "No reason provided"
 
-            return investigated_player
-        except Exception as e:
-            print(f"[investigate error] {e}")
-            return random.choice(possible_targets)  # Default choice in case of an error
+        # Store the internal reason for analysis (not visible to others)
+        if current_night > 1:  # Only store reasoning starting from Day 2
+            self.detective_thinking.append({
+                "player_id": self.player_name,
+                "investigated_player": investigated_player,
+                "internal_reason": internal_reason
+            })
+
+        return investigated_player
+
 
     def don_guess_detective(self, game_log: str, alive_players: list[int], current_night: int = 1) -> tuple:
         possible_targets = [p for p in alive_players if
@@ -297,16 +282,12 @@ class Agent:
             YOU MUST RESPOND WITH THE EXAMPLE FORMAT."""
 
         response = self._call_llm(system_prompt, user_prompt)
-        try:
-            lines = response.strip().split("\n", 1)
-            guessed_player = int(re.search(r'\d+', response).group()) if re.search(r'\d+', response) else None
-            # guessed_player = int(lines[0].replace("player_", "").strip())
-            reason = lines[1].strip() if len(lines) > 1 else "No reason provided"
-            return guessed_player, reason
-        except Exception as e:
-            print(f"[don_guess_detective error] {e}")
-            fallback = random.choice(possible_targets)
-            return fallback, "Fallback guess due to parsing error."
+        lines = response.strip().split("\n", 1)
+        guessed_player = int(re.search(r'\d+', response).group()) if re.search(r'\d+', response) else None
+        # guessed_player = int(lines[0].replace("player_", "").strip())
+        reason = lines[1].strip() if len(lines) > 1 else "No reason provided"
+        return guessed_player, reason
+
 
     def decide_kill(self, game_log: str, candidates: list[int], mafia_votes: list[tuple] = None, current_night: int = 1) -> int:
         possible_targets = [f"player_{i}" for i in candidates]
@@ -349,26 +330,23 @@ class Agent:
                 YOU MUST RESPOND WITH THE EXAMPLE FORMAT."""
 
         response = self._call_llm(system_prompt, user_prompt)
-        try:
-            # Split the response into vote (player) and internal reason
-            lines = response.split("\n", 1)
-            voted_player = int(re.search(r'\d+', response).group()) if re.search(r'\d+', response) else None
-            # voted_player = int(lines[0].replace("player_", "").strip())  # Extract player number
-            internal_reason = lines[1].strip() if len(lines) > 1 else "No reason provided"
+        # Split the response into vote (player) and internal reason
+        lines = response.split("\n", 1)
+        voted_player = int(re.search(r'\d+', response).group()) if re.search(r'\d+', response) else None
+        # voted_player = int(lines[0].replace("player_", "").strip())  # Extract player number
+        internal_reason = lines[1].strip() if len(lines) > 1 else "No reason provided"
 
-            # Store the internal reason for analysis (not visible to others)
-            if current_night > 1:  # Only store reasoning starting from Day 2
-                self.mafia_thinking.append({
-                    "player_id": self.player_name,
-                    "vote": voted_player,
-                    "internal_reason": internal_reason
-                })
+        # Store the internal reason for analysis (not visible to others)
+        if current_night > 1:  # Only store reasoning starting from Day 2
+            self.mafia_thinking.append({
+                "player_id": self.player_name,
+                "vote": voted_player,
+                "internal_reason": internal_reason
+            })
 
-            self.mafia_kill_targets.append(f"player_{voted_player}")
-            return voted_player
-        except Exception as e:
-            print(f"[decide_kill error] {e}")
-            return candidates[0]  # Default vote in case of an error
+        self.mafia_kill_targets.append(f"player_{voted_player}")
+        return voted_player
+
 
     def final_words(self, game_log: str, cause_of_death: str) -> str:
         system_prompt = self._build_system_prompt()

@@ -1,5 +1,7 @@
 import random
 import json
+
+from utils import retry
 from agent import Agent
 
 
@@ -353,6 +355,7 @@ class MafiaGame:
             return True
         return False
 
+    @retry()
     def run(self) -> str:
         while not self.check_win_condition():
             print(self.game_log)
