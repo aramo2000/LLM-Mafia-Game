@@ -63,7 +63,7 @@ class Agent:
             llm_response = config.GEMINI_CLIENT.models.generate_content(
                 model=config.GEMINI_MODEL,
                 contents=prompt,
-                config=config.GEMINI_CONFIG,
+                # config=config.GEMINI_CONFIG,
             )
             output_text = llm_response.text.strip() if hasattr(llm_response, "text") else ""
 
