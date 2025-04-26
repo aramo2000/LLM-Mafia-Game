@@ -1,7 +1,8 @@
 import json
 from typing import List, Dict
-
-
+from transformers import pipeline
+import textstat
+import config
 
 def llms_vote_stats(game_records: List[Dict], llms_used: List[str]) -> dict :
     stats = {llm_name:{"civilian_correct_votes":0, "got_civilian_votes_as_mafia":0, "civilian_no_one":0} for llm_name in llms_used}
@@ -24,6 +25,16 @@ def llms_vote_stats(game_records: List[Dict], llms_used: List[str]) -> dict :
                             stats[players_info[voter_name]["llm_name"]]["civilian_no_one"] += 1
 
     return stats
+
+
+def sentiment_analyzer(text: str) -> list :
+    sa = pipeline(task ='sentiment-analysis', model=config.HUGGINGFACE_MODEL)
+    return sa(text)
+
+def readability_metrics(text: str) -> list :
+    reading_ease = textstat.flesch_reading_ease(text)
+    grade_level = textstat.flesch_kincaid_grade(text)
+    return [reading_ease, grade_level]
 
 
 

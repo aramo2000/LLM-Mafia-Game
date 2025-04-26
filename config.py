@@ -36,3 +36,6 @@ GROK_API_KEY = os.getenv("GROK_API_KEY")
 GROK_CLIENT = OpenAI(api_key=GROK_API_KEY, base_url="https://api.x.ai/v1")
 GROK_MODEL = "grok-3-mini-beta"
 # GROK_MODEL = "grok-3-beta"
+
+# === HuggingFace ===
+HUGGINGFACE_MODEL = 'lxyuan/distilbert-base-multilingual-cased-sentiments-student'
