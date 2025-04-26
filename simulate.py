@@ -2,7 +2,7 @@ from game import MafiaGame
 import json
 import random
 
-allSame = False
+allSame = True
 
 if allSame:
     mafia_game = MafiaGame("openai") #openai/gemini/grok working    -    claude/deepseek not working as expected with the prompts
@@ -11,13 +11,13 @@ else:
     random.shuffle(llm_names)
     mafia_game = MafiaGame.from_llm_list(llm_names)
 
-number_of_games = 1
+number_of_games = 2
 games_total_record = []
-for _ in range(number_of_games):
+for i in range(number_of_games):
+    if i != 0:
+        with open("games_total_record.json", "r") as file:
+            games_total_record = json.load(file)
     mafia_game.run()
     games_total_record.append(mafia_game.game_data)
-
-with open("results.json", "w") as json_file:
-    json.dump(games_total_record, json_file, indent=4)
-
-# Joseph to test why claude and deepseek are not following orders from prompts. ok bro
+    with open("games_total_record.json", "w") as file:
+        json.dump(games_total_record, file, indent=4)
