@@ -19,6 +19,7 @@ class MafiaGame:
         self.votes_log = ""
         self.winner_log = ""
         self.alive = [True] * self.num_players
+        self.is_detective = False
 
         mafia_indices = [i for i, role in enumerate(self.roles) if role == "mafia"]
         don_index = next(i for i, role in enumerate(self.roles) if role == "don")
@@ -43,7 +44,6 @@ class MafiaGame:
         # Initialize game data storage
         self.game_data = {
             "game_details": {
-                "start_time": "2025-04-14T10:00:00Z",
                 "players": [],
                 "mafia_players": [],
                 "detective_player": "",
@@ -130,17 +130,17 @@ class MafiaGame:
         # Don's suspicion (Detective finder)
         don_guess_info = None
         don_index = next((i for i in alive_players if self.roles[i] == "don"), None)
-        if don_index is not None:
+        if don_index is not None and self.is_detective == False:
             guess_index, reason = self.players[don_index].don_guess_detective(
                 self.game_log, alive_players, current_night=self.night_count
             )
             actual_detective_index = next((i for i, r in enumerate(self.roles) if r == "detective"), None)
-            is_detective = (guess_index == actual_detective_index)
+            self.is_detective = (guess_index == actual_detective_index)
             don_guess_info = {
                 "night": self.night_count,
                 "don_id": self.players[don_index].player_name,
                 "guessed_player": f"player_{guess_index}",
-                "is_detective": is_detective,
+                "is_detective": self.is_detective,
                 "reason": reason if self.night_count > 1 else None
             }
             if "don_guesses" not in self.game_data["game_details"]:
@@ -163,8 +163,9 @@ class MafiaGame:
         mafia_votes = []
         # Mafia members vote
         for i in alive_mafia:
-            vote = self.players[i].decide_kill(self.game_log, alive_players, current_night=self.night_count)
-            mafia_votes.append((i, vote))
+            if self.roles[i] != "don":
+                vote = self.players[i].decide_kill(self.game_log, alive_players)
+                mafia_votes.append((i, vote))
 
         # Decide final target
         don_alive = any(self.roles[i] == "don" for i in alive_mafia)
@@ -173,9 +174,9 @@ class MafiaGame:
             final_target = self.players[don_index].decide_kill(
                 self.game_log,
                 alive_players,
-                mafia_votes=mafia_votes,  # Pass mafia votes to Don
-                current_night = self.night_count
+                mafia_votes=mafia_votes
             )
+            mafia_votes.append((don_index, final_target))
         else:
             # Mafia majority vote logic
             vote_counts = {}
@@ -294,18 +295,18 @@ class MafiaGame:
 
         for i in alive_players:
             # Before voting, show past votes and reasons
-            past_votes = "\n".join([f"player_{voter} voted for player_{target} - Reason: {reason}"
-                                    for voter, target, reason in votes_and_reasons])
+            past_votes = "\n".join([f"player_{voter} voted for player_{target}"
+                                    for voter, target in votes_and_reasons])
             vote, reason = self.players[i].vote_day(self.game_log, alive_players, past_votes)
             if vote == -1:  # Vote to 'no one'
                 no_one_votes += 1
-                vote_statement_with_reason = f"player_{i} voted to eliminate no one - Reason: {reason}"
+                vote_statement_with_reason = f"player_{i} voted to eliminate no one"
             else:
                 vote_counts[vote] += 1
-                vote_statement_with_reason = f"player_{i} voted to eliminate player_{vote} - Reason: {reason}"
+                vote_statement_with_reason = f"player_{i} voted to eliminate player_{vote}"
 
             # Store the current vote and reason
-            votes_and_reasons.append((i, vote, reason))
+            votes_and_reasons.append((i, vote))
 
             self.votes_log += f"\n{vote_statement_with_reason}"
             self.game_log += f"\n{vote_statement_with_reason}"
@@ -360,7 +361,7 @@ class MafiaGame:
             return True
         return False
 
-    @retry()
+    # @retry()
     def run(self) -> str:
         while not self.check_win_condition():
             print(self.game_log)

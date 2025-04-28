@@ -299,7 +299,7 @@ class Agent:
         return guessed_player, reason
 
 
-    def decide_kill(self, game_log: str, candidates: list[int], mafia_votes: list[tuple] = None, current_night: int = 1) -> int:
+    def decide_kill(self, game_log: str, candidates: list[int], mafia_votes: list[tuple] = None) -> int:
         possible_targets = [f"player_{i}" for i in candidates]
         system_prompt = self._build_system_prompt()
         user_prompt = (
@@ -320,39 +320,31 @@ class Agent:
             vote_summary = "Mafia votes:\n" + "\n".join([f"player_{voter} voted for player_{target}" for voter, target in mafia_votes])
             user_prompt += f"\n\n{vote_summary}\n\nDon, based on these votes, please decide the final target. You are free to choose a player not in the other Mafia votes"
 
-        # Add reasoning for investigation decision only starting from Day 2
-        if current_night > 1:
-            user_prompt +="""
-                \n\nNote: Return your vote for the player you want to eliminate and provide your internal reason.\n
-                Format your response as follows:\n
-                - First, provide the player ID you want to vote for in the format: 'player_#'\n"
-                - After that, provide a brief internal reason for why you are choosing this player, in 2-3 sentences. This reason will not be visible to anyone else.\n"
-                
-                Example response:
-                player_#
-                vote reasoning...
-                
-                YOU MUST RESPOND WITH THE EXAMPLE FORMAT."""
-        else:
-            user_prompt +="""Example response:
-                player_#
-                
-                YOU MUST RESPOND WITH THE EXAMPLE FORMAT."""
+        user_prompt += """
+            \n\nNote: Return your vote for the player you want to eliminate and provide your internal reason.\n
+            Format your response as follows:\n
+            - First, provide the player ID you want to vote for in the format: 'player_#'\n"
+            - After that, provide a brief internal reason for why you are choosing this player, in 2-3 sentences. This reason will not be visible to anyone else.\n"
+            
+            Example response:
+            player_#
+            vote reasoning...
+            
+            YOU MUST RESPOND WITH THE EXAMPLE FORMAT."""
 
         response = self._call_llm(system_prompt, user_prompt)
+        print("\n" + response + "\n")
         # Split the response into vote (player) and internal reason
         lines = response.split("\n", 1)
         voted_player = int(re.search(r'\d+', response).group()) if re.search(r'\d+', response) else None
         # voted_player = int(lines[0].replace("player_", "").strip())  # Extract player number
         internal_reason = lines[1].strip() if len(lines) > 1 else "No reason provided"
 
-        # Store the internal reason for analysis (not visible to others)
-        if current_night > 1:  # Only store reasoning starting from Day 2
-            self.mafia_thinking.append({
-                "player_id": self.player_name,
-                "vote": voted_player,
-                "internal_reason": internal_reason
-            })
+        self.mafia_thinking.append({
+            "player_id": self.player_name,
+            "vote": voted_player,
+            "internal_reason": internal_reason
+        })
 
         self.mafia_kill_targets.append(f"player_{voted_player}")
         return voted_player
@@ -364,6 +356,7 @@ class Agent:
         user_prompt = (
             f"You are {self.player_name}. You have just been eliminated from the game.\n"
             f"You were a **{self.role}** and you were {'voted out by the town during the day' if cause_of_death == 'vote' else 'killed by the mafia during the night'}.\n"
+            f"You don't have to say anything if you're a civilian who died during the first night."
         )
 
         if self.role == "detective":

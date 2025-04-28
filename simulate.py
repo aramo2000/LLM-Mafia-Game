@@ -9,6 +9,7 @@ if allSame:
     mafia_game = MafiaGame("openai")
 else:
     llm_names = 2 * ["openai"] + 2 * ["gemini"] + 2 * ["grok"] + 2 * ["claude"] + 2 * ["deepseek"]
+    # llm_names = 10 * ["openai"]
     random.shuffle(llm_names)
     mafia_game = MafiaGame.from_llm_list(llm_names)
 games_total_record = []
