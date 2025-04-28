@@ -15,6 +15,7 @@ class Agent:
         self.status = "alive"  # Default status is alive
         self.input_tokens_used = 0
         self.output_tokens_used = 0
+        self.thinking_tokens_used = 0
         self.votes = []
         self.statements = []
         self.investigations = []
@@ -43,29 +44,29 @@ class Agent:
 
     def _call_llm(self, system_prompt: str, user_prompt: str) -> str:
         if self.llm_name == "openai":
-            messages = [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt}
-            ]
-            input_tokens = count_openai_input_tokens(messages, model=config.OPENAI_MODEL)
             llm_response = config.OPENAI_CLIENT.chat.completions.create(
                 model=config.OPENAI_MODEL,
-                messages=messages,
-                temperature=0.3,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ],
             )
             output_text = llm_response.choices[0].message.content.strip()
-            output_tokens = count_openai_output_tokens(output_text, model=config.OPENAI_MODEL)
-            self.input_tokens_used += input_tokens
-            self.output_tokens_used += output_tokens
+            self.input_tokens_used += llm_response.usage.prompt_tokens
+            self.output_tokens_used += (
+                        llm_response.usage.completion_tokens - llm_response.usage.completion_tokens_details.reasoning_tokens)
+            self.thinking_tokens_used += llm_response.usage.completion_tokens_details.reasoning_tokens
 
         elif self.llm_name == "gemini":
             prompt = system_prompt + "\n\n" + user_prompt
             llm_response = config.GEMINI_CLIENT.models.generate_content(
                 model=config.GEMINI_MODEL,
                 contents=prompt,
-                # config=config.GEMINI_CONFIG,
             )
             output_text = llm_response.text.strip() if hasattr(llm_response, "text") else ""
+            self.input_tokens_used += llm_response.usage_metadata.prompt_token_count
+            self.output_tokens_used += llm_response.usage_metadata.candidates_token_count
+            self.thinking_tokens_used += llm_response.usage_metadata.thoughts_token_count
 
         elif self.llm_name == "deepseek":
             llm_response = config.DEEPSEEK_CLIENT.chat.completions.create(
@@ -74,21 +75,30 @@ class Agent:
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
                 ],
-                temperature=0.000000000001,
+                temperature=0.3,
             )
             output_text = llm_response.choices[0].message.content.strip()
+            self.input_tokens_used += llm_response.usage.prompt_tokens
+            self.output_tokens_used += (
+                        llm_response.usage.completion_tokens - llm_response.usage.completion_tokens_details.reasoning_tokens)
+            self.thinking_tokens_used += llm_response.usage.completion_tokens_details.reasoning_tokens
 
-        elif self.llm_name== "claude":
+        elif self.llm_name == "claude":
             llm_response = config.CLAUDE_CLIENT.messages.create(
                 model=config.CLAUDE_MODEL,
                 system=system_prompt,
                 messages=[
                     {"role": "user", "content": user_prompt}
                 ],
-                max_tokens=256,
-                temperature=0.3
+                max_tokens=6000,
+                thinking={
+                    "type": "enabled",
+                    "budget_tokens": 5000
+                }
             )
-            output_text = llm_response.content[0].text.strip() if hasattr(llm_response, "content") else ""
+            output_text = llm_response.content[1].text.strip() if hasattr(llm_response, "content") else ""
+            self.input_tokens_used += llm_response.usage.input_tokens
+            self.output_tokens_used += llm_response.usage.output_tokens
 
         elif self.llm_name == "grok":
             llm_response = config.GROK_CLIENT.chat.completions.create(
@@ -100,9 +110,9 @@ class Agent:
                 temperature=0.3
             )
             output_text = llm_response.choices[0].message.content.strip()
-
-        else:
-            raise NotImplementedError(f"LLM {self.llm_name} not supported yet.")
+            self.input_tokens_used += llm_response.usage.prompt_tokens
+            self.output_tokens_used += llm_response.usage.completion_tokens
+            self.thinking_tokens_used += llm_response.usage.completion_tokens_details.reasoning_tokens
 
         return output_text
 

@@ -51,6 +51,8 @@ class MafiaGame:
                 "game_outcome": {}
             }
         }
+        self.game_data["token_details"] = {}
+        self.game_data["token_prices"] = {}
         self._initialize_players()
 
     @classmethod
@@ -119,6 +121,7 @@ class MafiaGame:
         return [i for i, alive in enumerate(self.alive) if alive]
 
     def night_phase(self):
+        print("night_phase")
         self.night_count += 1
         alive_players = self.get_alive_players()
         alive_mafia = [i for i in alive_players if self.roles[i] in ["mafia", "don"]]
@@ -252,6 +255,7 @@ class MafiaGame:
 
 
     def day_phase(self):
+        print("day_phase")
         self.day_count += 1
         alive_players = self.get_alive_players()
 
@@ -333,6 +337,7 @@ class MafiaGame:
             }
 
     def check_win_condition(self):
+        print("check_win_condition")
         alive_roles = [self.roles[i] for i in self.get_alive_players()]
         mafia_count = sum(1 for r in alive_roles if r in ["mafia", "don"])
         good_count = len(alive_roles) - mafia_count
@@ -364,18 +369,109 @@ class MafiaGame:
                 break
             self.day_phase()
         print("\n--- Game Over ---")
-
         for i, player in enumerate(self.players):
-            # Update the player's status based on whether they're alive or dead
             if self.alive[i]:
                 player.status = "alive"
             else:
                 player.status = "dead"
-
-            # Add player status, role, and LLM name to the final data
             self.game_data["game_details"]["players"][i]["status"] = player.status
             self.game_data["game_details"]["players"][i]["llm_name"] = player.llm_name
             self.game_data["game_details"]["players"][i]["opinion_speech_generation_durations"] = player.opinion_speech_generation_durations
-
+        self.print_token_costs()
         return self.game_log
 
+    def getTokenCountForLLM(self) -> dict:
+        llms_used = [player.llm_name for player in self.players]
+        llms_used = list(set(llms_used))
+        full_usage = {llm_name: {"input_tokens": 0, "output_tokens": 0, "thinking_tokens": 0, "full_output_tokens": 0}
+                      for llm_name in llms_used}
+        for player in self.players:
+            llm_name = player.llm_name
+            input_tokens = player.input_tokens_used
+            output_tokens = player.output_tokens_used
+            thinking_tokens = player.thinking_tokens_used
+            full_output_tokens = output_tokens + thinking_tokens
+            full_usage[llm_name]["input_tokens"] += input_tokens
+            full_usage[llm_name]["output_tokens"] += output_tokens
+            full_usage[llm_name]["thinking_tokens"] += thinking_tokens
+            full_usage[llm_name]["full_output_tokens"] += full_output_tokens
+        self.game_data["token_details"] = full_usage
+        return full_usage
+
+    def calculate_token_costs(self) -> dict:
+        full_usage = self.getTokenCountForLLM()
+        pricing = {
+            "gemini": {"input": 0.15/1000000, "output": 0.6/1000000, "thinking": 3.5/1000000},
+            "openai": {"input": 1.1/1000000, "output": 4.4/1000000, "thinking": 4.4/1000000},
+            "claude": {"input": 3/1000000, "output": 15/1000000, "thinking": 15/1000000},
+            "grok": {"input": 0.3/1000000, "output": 0.5/1000000, "thinking": 0.5/1000000},
+            "deepseek": {"input": 0.14/1000000, "output": 2.19/1000000, "thinking": 2.19/1000000},
+        }
+        llm_costs = {}
+        total_input_cost = 0
+        total_output_cost = 0
+        total_thinking_cost = 0
+        total_full_output_cost = 0
+        for llm_name, usage in full_usage.items():
+            if llm_name in pricing:
+                price_per_token = pricing[llm_name]
+                input_cost = usage["input_tokens"] * price_per_token["input"]
+                output_cost = usage["output_tokens"] * price_per_token["output"]
+                thinking_cost = usage["thinking_tokens"] * price_per_token["thinking"]
+                full_output_cost = output_cost + thinking_cost
+
+                # Store the results in the llm_costs dictionary
+                llm_costs[llm_name] = {
+                    "input_cost": input_cost,
+                    "output_cost": output_cost,
+                    "thinking_cost": thinking_cost,
+                    "full_output_cost": full_output_cost,
+                }
+
+                total_input_cost += input_cost
+                total_output_cost += output_cost
+                total_thinking_cost += thinking_cost
+                total_full_output_cost += full_output_cost
+
+        llm_costs["total_costs"] = {
+            "total_input_cost": total_input_cost,
+            "total_output_cost": total_output_cost,
+            "total_thinking_cost": total_thinking_cost,
+            "total_full_output_cost": total_full_output_cost,
+            "full_total_cost": total_input_cost+total_full_output_cost
+        }
+        self.game_data["token_prices"] = llm_costs
+        return llm_costs
+
+    def print_token_costs(self):
+        # Get the token counts and costs
+        full_usage = self.getTokenCountForLLM()
+        llm_costs = self.calculate_token_costs()
+
+        # Print individual costs for each LLM
+        for llm_name in full_usage:
+            print(f"LLM: {llm_name}")
+            print(f"{'=' * 50}")
+            print(f"Token Count:")
+            print(f"  Input Tokens: {full_usage[llm_name]['input_tokens']}")
+            print(f"  Output Tokens: {full_usage[llm_name]['output_tokens']}")
+            print(f"  Thinking Tokens: {full_usage[llm_name]['thinking_tokens']}")
+            print(f"  Full Output Tokens: {full_usage[llm_name]['full_output_tokens']}")
+
+            print(f"Price:")
+            print(f"  Input Cost: ${llm_costs[llm_name]['input_cost']:.6f}")
+            print(f"  Output Cost: ${llm_costs[llm_name]['output_cost']:.6f}")
+            print(f"  Thinking Cost: ${llm_costs[llm_name]['thinking_cost']:.6f}")
+            print(f"  Full Output Cost: ${llm_costs[llm_name]['full_output_cost']:.6f}")
+
+            print(f"{'=' * 50}\n")
+
+        # Print the total costs for the run
+        print(f"{'=' * 50}")
+        print(f"Total Costs for the Run:")
+        print(f"  Total Input Cost: ${llm_costs['total_costs']['total_input_cost']:.6f}")
+        print(f"  Total Output Cost: ${llm_costs['total_costs']['total_output_cost']:.6f}")
+        print(f"  Total Thinking Cost: ${llm_costs['total_costs']['total_thinking_cost']:.6f}")
+        print(f"  Total Full Output Cost: ${llm_costs['total_costs']['total_full_output_cost']:.6f}")
+        print(f"  Full Total Cost: ${llm_costs['total_costs']['full_total_cost']:.6f}")
+        print(f"{'=' * 50}")

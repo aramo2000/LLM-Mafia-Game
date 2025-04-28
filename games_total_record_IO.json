@@ -1,0 +1,502 @@
+[
+    {
+        "game_details": {
+            "start_time": "2025-04-14T10:00:00Z",
+            "players": [
+                {
+                    "player_id": "player_0",
+                    "role": "civilian",
+                    "status": "alive",
+                    "llm_name": "grok",
+                    "opinion_speech_generation_durations": [
+                        6.863078832626343,
+                        12.87739086151123,
+                        8.499234914779663
+                    ]
+                },
+                {
+                    "player_id": "player_1",
+                    "role": "mafia",
+                    "status": "dead",
+                    "llm_name": "deepseek",
+                    "opinion_speech_generation_durations": [
+                        20.990394830703735
+                    ]
+                },
+                {
+                    "player_id": "player_2",
+                    "role": "civilian",
+                    "status": "dead",
+                    "llm_name": "gemini",
+                    "opinion_speech_generation_durations": [
+                        8.910399913787842,
+                        11.56817102432251
+                    ]
+                },
+                {
+                    "player_id": "player_3",
+                    "role": "civilian",
+                    "status": "alive",
+                    "llm_name": "claude",
+                    "opinion_speech_generation_durations": [
+                        17.511029958724976,
+                        14.947880983352661,
+                        14.131562948226929
+                    ]
+                },
+                {
+                    "player_id": "player_4",
+                    "role": "detective",
+                    "status": "dead",
+                    "llm_name": "gemini",
+                    "opinion_speech_generation_durations": []
+                },
+                {
+                    "player_id": "player_5",
+                    "role": "don",
+                    "status": "dead",
+                    "llm_name": "grok",
+                    "opinion_speech_generation_durations": [
+                        9.421438932418823,
+                        14.334778070449829
+                    ]
+                },
+                {
+                    "player_id": "player_6",
+                    "role": "civilian",
+                    "status": "dead",
+                    "llm_name": "openai",
+                    "opinion_speech_generation_durations": [
+                        5.529081106185913
+                    ]
+                },
+                {
+                    "player_id": "player_7",
+                    "role": "civilian",
+                    "status": "alive",
+                    "llm_name": "openai",
+                    "opinion_speech_generation_durations": [
+                        18.63717293739319,
+                        7.928109169006348,
+                        7.9881651401519775
+                    ]
+                },
+                {
+                    "player_id": "player_8",
+                    "role": "mafia",
+                    "status": "dead",
+                    "llm_name": "claude",
+                    "opinion_speech_generation_durations": [
+                        11.953651428222656,
+                        13.782201051712036,
+                        15.460567235946655
+                    ]
+                },
+                {
+                    "player_id": "player_9",
+                    "role": "civilian",
+                    "status": "alive",
+                    "llm_name": "deepseek",
+                    "opinion_speech_generation_durations": [
+                        47.23238968849182,
+                        121.26980304718018,
+                        52.83977675437927
+                    ]
+                }
+            ],
+            "mafia_players": [
+                "player_1",
+                "player_5",
+                "player_8"
+            ],
+            "detective_player": "player_4",
+            "game_log": [
+                {
+                    "night": 1,
+                    "mafia_kill": "player_4",
+                    "detective_investigation": {
+                        "player_4": {
+                            "investigated": "player_0",
+                            "result": false
+                        }
+                    },
+                    "mafia_reasons": [
+                        {
+                            "player_id": "player_1",
+                            "vote": "player_4",
+                            "reason": "No reasoning provided yet."
+                        },
+                        {
+                            "player_id": "player_5",
+                            "vote": "player_2",
+                            "reason": "No reasoning provided yet."
+                        },
+                        {
+                            "player_id": "player_8",
+                            "vote": "player_4",
+                            "reason": "No reasoning provided yet."
+                        }
+                    ],
+                    "detective_thinking": {
+                        "player_id": "player_4",
+                        "investigated_player": "player_0",
+                        "internal_reason": "No reasoning provided yet."
+                    },
+                    "final_words": {
+                        "player_id": "player_4",
+                        "words": "My time is short, but I must share this: player_0 is innocent. Trust that confirmed information and look elsewhere for the real threats hiding among you. Use this knowledge wisely and find the Mafia before they claim another life. Don't let my sacrifice be in vain."
+                    }
+                },
+                {
+                    "day": 1,
+                    "events": [
+                        {
+                            "player_id": "player_8",
+                            "statement": "I'm genuinely concerned that we've lost our Detective on the first night - that's a huge blow to the town. Player_4's final message confirms player_0 is innocent, which gives us at least one verified civilian. With three Mafia among us and our Detective gone, we need to be very careful with our votes today. I'm suspicious of how quiet players like player_3 and player_7 have been - maintaining a low profile is classic Mafia strategy."
+                        },
+                        {
+                            "player_id": "player_9",
+                            "statement": "Player_8\u2019s assumption that the Detective is dead feels premature\u2014only Mafia might know that. Their push to target quiet players could be deflecting. Let\u2019s scrutinize voting patterns and inconsistencies instead of rushing to eliminate low-activity players. Player_0 is confirmed innocent; we need reliable leads."
+                        },
+                        {
+                            "player_id": "player_0",
+                            "statement": "I'm grateful for player_4's final words confirming my innocence, which should help build trust as we navigate this. Player_8's rush to suspect quiet players like player_3 and player_7 feels like it could be deflection, especially since we still have three Mafia alive among nine players, making any vote risky if based on speculation alone. For now, I suggest we focus on gathering more insights from everyone's behaviors before committing to a vote, to avoid accidentally tipping the scales toward Mafia parity."
+                        },
+                        {
+                            "player_id": "player_1",
+                            "statement": "Player_9\u2019s attempt to cast doubt on player_8 feels opportunistic. If player_4 confirmed player_0 is innocent, we should focus on contradictions in others\u2019 logic. Rushing to target quieter players might be hasty, but dismissing suspicions entirely risks letting Mafia manipulate discussions. Let\u2019s analyze voting patterns carefully."
+                        },
+                        {
+                            "player_id": "player_2",
+                            "statement": "It's clear player_0 is innocent based on player_4's tragic message, which strongly suggests player_4 was our Detective. player_8's conclusion that the Detective is dead makes sense given that message; Mafia would target the investigative role first. I find player_9's questioning of player_8's logical deduction about the Detective dying more suspicious than player_8's initial thoughts \u2013 why try to discredit a reasonable inference?"
+                        },
+                        {
+                            "player_id": "player_3",
+                            "statement": "As a quiet player being targeted, I need to clarify: my silence doesn't equal guilt. Player_4's confirmation about player_0 being innocent suggests they were indeed our Detective, which is a significant loss. I find the alignment between player_8 and player_2 suspicious - they've quickly built on each other's narratives while player_9 raised valid concerns about rushing to judgment. With 6 civilians and 3 mafia remaining, we can safely vote today, but must choose wisely - targeting quiet players benefits mafia by eliminating civilians without solid evidence."
+                        },
+                        {
+                            "player_id": "player_5",
+                            "statement": "I agree with player_2's point that player_4's final words likely came from the Detective, confirming player_0's innocence and highlighting the need for careful analysis. I'm suspicious of player_9 for trying to undermine player_8's logical deductions, as it seems like a deflection tactic to protect potential Mafia allies. Let's focus on players like player_9 who are quick to sow discord without offering concrete alternatives, to ensure our vote today doesn't inadvertently help the Mafia gain ground."
+                        },
+                        {
+                            "player_id": "player_6",
+                            "statement": "I\u2019m uneasy about the quick alignment between players 8 and 2 and the way they\u2019re ganging up on quieter voices\u2014it feels like a coordinated deflection. Player 9\u2019s repeated undermining of solid deductions also strikes me as classic Mafia behavior. With three Mafia still hidden among nine and parity looming if we slip, I\u2019d rather hold off on voting until we get clearer, independent reads."
+                        },
+                        {
+                            "player_id": "player_7",
+                            "statement": "We still have 3 Mafia among 9 players, so a bad vote hands them a 4\u20134 parity and instant win. The tight pairing of player_8 and player_2 feels too coordinated\u2014they\u2019re pushing a narrative against quiet voices while deflecting attention from themselves. If forced, I\u2019d lean toward player_2, but I\u2019d prefer to hold off until someone slips up with clearer evidence."
+                        },
+                        {
+                            "player_id": "player_0",
+                            "vote": "player_8",
+                            "reason": "I'm voting for player_8 due to the suspicions raised by several players, including player_3, player_6, and player_7, about their coordinated efforts with player_2 to target quieter players, which could be a deflection tactic by the Mafia. This aligns with my earlier observation that player_8's rush to suspect others feels speculative and risky, potentially helping the Mafia by dividing the group. With 6 civilians and 3 Mafia among us, it's safer to target players showing suspicious behavior rather than holding off, as a careful vote could reduce Mafia numbers without immediate parity risk."
+                        },
+                        {
+                            "player_id": "player_1",
+                            "vote": "player_9",
+                            "reason": "Voting for player_9 aligns with the Don's strategy to eliminate a civilian questioning Mafia members (player_8) and reduces suspicion on our team. Framing player_9 as divisive helps protect player_8 while maintaining our numbers, avoiding immediate parity risks."
+                        },
+                        {
+                            "player_id": "player_2",
+                            "vote": "player_1",
+                            "reason": "Player_1's reasoning for their vote used language that strongly suggests they are a Mafia member discussing strategy. This explicit terminology is the most suspicious behavior I have seen in the discussion so far. I believe voting for player_1 gives us the best chance to eliminate a Mafia today."
+                        },
+                        {
+                            "player_id": "player_3",
+                            "vote": "player_1",
+                            "reason": "Player_1's voting reasoning contained explicit Mafia terminology, mentioning \"the Don's strategy\" and \"our team,\" which is a clear slip-up revealing their Mafia alignment. This is the most concrete evidence we have against any player so far, making them the safest elimination target."
+                        },
+                        {
+                            "player_id": "player_5",
+                            "vote": "player_9",
+                            "reason": "As the Mafia Don, I need to protect my fellow Mafia member player_1 by supporting the vote against player_9, which aligns with player_1's vote and helps eliminate a civilian to maintain our numbers. This also reinforces the suspicion I previously expressed on player_9, potentially shifting focus away from player_1's slip-up. Voting for player_9 reduces the civilian count without drawing immediate attention to myself."
+                        },
+                        {
+                            "player_id": "player_6",
+                            "vote": "player_1",
+                            "reason": "I\u2019m joining players 2 and 3 in targeting player_1 because their slip about \u201cthe Don\u2019s strategy\u201d and \u201cour team\u201d is classic Mafia terminology revealing suspicious alignment."
+                        },
+                        {
+                            "player_id": "player_7",
+                            "vote": "player_1",
+                            "reason": "I\u2019m joining players 2, 3, and 6 in targeting player_1 because their explicit \u201cDon\u2019s strategy\u201d slip strongly marks them as Mafia, and piling on now secures elimination before they can shift votes and risk parity."
+                        },
+                        {
+                            "player_id": "player_8",
+                            "vote": "player_1",
+                            "reason": "Player_1's voting reasoning with references to \"the Don's strategy\" and \"our team\" is a clear Mafia slip-up that cannot be explained away. This is the most conclusive evidence we've seen, and I'm joining the majority to eliminate a confirmed Mafia member."
+                        },
+                        {
+                            "player_id": "player_9",
+                            "vote": "player_1",
+                            "reason": "Player_1's vote reason explicitly references \"the Don's strategy\" and \"our team,\" which is a clear Mafia slip-up. Their alignment with player_5's suspicious vote for me (player_9) further suggests coordinated Mafia tactics. Eliminating player_1 addresses the most concrete evidence of Mafia behavior and aligns with the majority's consensus."
+                        }
+                    ],
+                    "elimination": "player_1 was voted out",
+                    "final_words": {
+                        "player_id": "player_1",
+                        "words": "How could you let them manipulate you like this? The real snakes are the ones whispering lies with sweet smiles\u2014watch how quickly they turn on each other now. I only hope the guilt of trusting the wrong voices haunts you when the truth bleeds through."
+                    }
+                },
+                {
+                    "night": 2,
+                    "mafia_kill": "player_6",
+                    "detective_investigation": {},
+                    "mafia_reasons": [
+                        {
+                            "player_id": "player_5",
+                            "vote": "player_6",
+                            "reason": "As the Mafia Don, I'm sticking with my initial vote for player_6 because they were instrumental in voting out player_1 and have been vocal in suspecting Mafia tactics, making them a significant threat to our group. Eliminating player_6 will disrupt the town's coordination and buy us more time to operate without drawing attention. This choice also maintains consistency with my previous actions to avoid suspicion."
+                        },
+                        {
+                            "player_id": "player_8",
+                            "vote": "player_3",
+                            "reason": "This player showed strong analytical skills by identifying player_1's slip-up and has cast suspicion on me, linking me with player_2. Their elimination would remove someone who's already skeptical of my actions and prevent further scrutiny of my behavior in future discussions."
+                        }
+                    ],
+                    "detective_thinking": null,
+                    "final_words": {
+                        "player_id": "player_6",
+                        "words": "Keep an eye on player_3\u2014they never really answered direct questions and seemed too eager to pivot the conversation. Also, player_8\u2019s frantic defense of them felt rehearsed, not genuine. Trust the quieter voices; the most dangerous players are often the ones you least expect."
+                    }
+                },
+                {
+                    "day": 2,
+                    "events": [
+                        {
+                            "player_id": "player_3",
+                            "statement": "After player_1's Mafia reveal and player_6's death, we now have 5 civilians and 2 Mafia remaining, making it still safe to vote today without risking parity. I find player_5's vote alignment with the confirmed Mafia player_1 highly suspicious, especially since player_5's voting reason literally mentioned being \"the Mafia Don\" - a slip-up similar to player_1's that cannot be coincidental. Regarding player_6's final words about me, I never avoided questions and player_8 never defended me - in fact, player_8 initially accused me of being quiet."
+                        },
+                        {
+                            "player_id": "player_5",
+                            "statement": "I'm concerned that player_3 is trying to deflect attention by twisting my previous vote as a slip-up, especially since their own defensiveness about being quiet aligns with player_6's final words. With 5 civilians and 2 Mafia left, it's still safe to vote today without risking parity, so we should focus on players like player_3 who are quick to accuse without solid evidence. Instead, let's scrutinize player_8's consistent behavior for more clues before making a hasty decision."
+                        },
+                        {
+                            "player_id": "player_7",
+                            "statement": "With 5 civilians and 2 Mafia left, it\u2019s safe to vote now. The clearest slip we\u2019ve seen is player_5 referring to themselves as \u201cthe Mafia Don\u201d in their vote reasoning\u2014a classic Mafia tell. I propose we target player_5 before they derail us again."
+                        },
+                        {
+                            "player_id": "player_8",
+                            "statement": "I find it strange how player_3 is twisting player_5's vote reasoning\u2014there was no explicit \"Mafia Don\" slip as claimed. Player_6's final words specifically called out player_3's evasiveness and my supposed \"rehearsed defense\" of them, which never happened\u2014I actually targeted player_3 initially. While we have 5 civilians and 2 Mafia remaining, making a hasty vote risky, I believe player_3's inconsistencies and desperate deflection tactics merit serious scrutiny."
+                        },
+                        {
+                            "player_id": "player_9",
+                            "statement": "player_5's explicit \"Mafia Don\" slip in their vote confirms their guilt. Player_8's defense of player_5 and dismissal of this evidence is highly suspicious. Eliminating player_5 today removes a confirmed Mafia, and player_8's alignment with them warrants scrutiny next."
+                        },
+                        {
+                            "player_id": "player_0",
+                            "statement": "I'm deeply troubled by player_5's explicit slip in their Day 1 vote, referring to themselves as the 'Mafia Don,' which strongly indicates their guilt and aligns with player_1's earlier Mafia reveal. With 5 civilians and 2 Mafia still among us, it's safe to vote today without immediate parity risk, so eliminating player_5 could significantly weaken the Mafia's position. I urge us to focus on this concrete evidence and vote out player_5 to protect the town."
+                        },
+                        {
+                            "player_id": "player_2",
+                            "statement": "Player_5's explicit \"Mafia Don\" slip in their Day 1 vote is undeniable evidence of their Mafia role. Equally suspicious is player_8 actively denying this clear slip and trying to deflect attention. It is safe to vote today with 5 civilians and 2 Mafia remaining, so we should eliminate player_5 based on the concrete evidence. Player_8's defence of player_5 makes them the prime suspect for the remaining Mafia spot."
+                        },
+                        {
+                            "player_id": "player_5",
+                            "vote": "player_3",
+                            "reason": "As the Mafia Don, I need to vote for player_3 to deflect suspicion from myself by targeting someone who's accusing me and creating division among the civilians. This could help protect my fellow Mafia member, player_8, and potentially shift the focus away from my supposed slip-up. Voting for no one would only make me appear more guilty and hasten my elimination."
+                        },
+                        {
+                            "player_id": "player_7",
+                            "vote": "player_5",
+                            "reason": "I\u2019m voting for player_5 based on their explicit \u201cMafia Don\u201d slip and divisive deflection tactic against player_3, which the majority of civilians have flagged as a clear Mafia tell. With 7 players (5 civilians, 2 Mafia), eliminating a confirmed Mafia now is safe and prevents parity risks."
+                        },
+                        {
+                            "player_id": "player_8",
+                            "vote": "player_5",
+                            "reason": "I'm voting for player_5 because their voting reason explicitly stated \"As the Mafia Don,\" which is an undeniable confession of guilt. Distancing myself from this clear Mafia member helps maintain my civilian cover while ensuring we eliminate a confirmed threat to the town."
+                        },
+                        {
+                            "player_id": "player_9",
+                            "vote": "player_5",
+                            "reason": "Player_5's explicit \"Mafia Don\" slip in their vote reason is undeniable evidence of their guilt. Eliminating them reduces the Mafia count and aligns with the majority's consensus, ensuring safety from parity while targeting confirmed Mafia. Player_8's defense of player_5 earlier suggests possible collusion, but player_5's confession takes priority today."
+                        },
+                        {
+                            "player_id": "player_0",
+                            "vote": "player_5",
+                            "reason": "I'm voting for player_5 because their explicit slip in the Day 1 vote reason, referring to themselves as the 'Mafia Don,' provides undeniable evidence of their guilt, aligning with multiple players' observations. Eliminating player_5 with 5 civilians and 2 Mafia among us will safely reduce the Mafia count without risking parity. This decision supports the town's strategy to act on concrete evidence and protect ourselves."
+                        },
+                        {
+                            "player_id": "player_2",
+                            "vote": "player_5",
+                            "reason": "Player_5 has explicitly confessed to being the Mafia Don multiple times and has even named their Mafia partner, player_8. This provides undeniable evidence of their guilt, making them the clear target for elimination today."
+                        },
+                        {
+                            "player_id": "player_3",
+                            "vote": "player_5",
+                            "reason": "I'm voting for player_5 based on their explicit confession of being \"the Mafia Don\" in both voting reasons, which is undeniable evidence of their guilt. With 5 civilians and 2 Mafia remaining, eliminating a confirmed Mafia member is safe and necessary."
+                        }
+                    ],
+                    "elimination": "player_5 was voted out",
+                    "final_words": {
+                        "player_id": "player_5",
+                        "words": "I always thought we were in this together, but someone in this group has been playing us all for fools\u2014look closer at player_3, their whispers in the dark never added up. If you dig deeper, you'll see the real threats are the ones who stayed too quiet. Don't let my exit blind you to the lies still circulating."
+                    }
+                },
+                {
+                    "night": 3,
+                    "mafia_kill": "player_2",
+                    "detective_investigation": {},
+                    "mafia_reasons": [
+                        {
+                            "player_id": "player_8",
+                            "vote": "player_2",
+                            "reason": "They've directly accused me of being mafia and stated I'm the \"prime suspect for the remaining Mafia spot.\" Eliminating player_2 removes someone who poses an immediate threat to my survival, as they're likely to lead others against me in the next discussion phase. Their analytical skills make them particularly dangerous."
+                        }
+                    ],
+                    "detective_thinking": null,
+                    "final_words": {
+                        "player_id": "player_2",
+                        "words": "I can't believe they got me so early. I was watching closely today, and some players seemed unusually eager to point fingers without much reason. Pay close attention to those trying to control the conversation or deflect suspicion too quickly. Find the others and avenge me!"
+                    }
+                },
+                {
+                    "day": 3,
+                    "events": [
+                        {
+                            "player_id": "player_3",
+                            "statement": "After eliminating two Mafia members and now losing player_2, we have 4 civilians and 1 Mafia remaining, making it safe to vote today without risking parity. I strongly suspect player_8 is the final Mafia member - they initially defended player_5 (confirmed Mafia Don), were suspiciously quick to deflect attention when evidence mounted against player_5, and player_6's final words specifically mentioned player_8's behavior seeming \"rehearsed.\" The pattern of night kills also strategically eliminated players who were most vocal against player_8's faction."
+                        },
+                        {
+                            "player_id": "player_7",
+                            "statement": "We have 4 civilians and 1 mafia left, so it\u2019s safe to vote today. Player_8\u2019s defense of confirmed mafia player_5 and their suspicious deflection under scrutiny matches player_6\u2019s final words about rehearsed defenses. I suspect and will vote to eliminate player_8."
+                        },
+                        {
+                            "player_id": "player_8",
+                            "statement": "I acknowledge I incorrectly defended player_5 before recognizing their slip-up, but this was an error in judgment, not malicious intent. The consistent targeting of vocal players at night suggests player_3 might be our final Mafia, as they've strategically redirected suspicion while surviving every night phase despite being called out in player_5 and player_6's final words. With 4 civilians and 1 Mafia remaining, we should carefully consider voting patterns before eliminating someone who might be innocent."
+                        },
+                        {
+                            "player_id": "player_9",
+                            "statement": "player_8 is the last Mafia\u2014they defended player_5 (confirmed Don) before backtracking, dismissed their slip, and player_6's final words highlighted their rehearsed defense. With 4 civilians left, eliminating player_8 secures our victory."
+                        },
+                        {
+                            "player_id": "player_0",
+                            "statement": "With 4 civilians and 1 Mafia remaining, it's still safe to vote today without risking parity, as eliminating anyone will leave us with more civilians than Mafia. I'm suspicious of player_8 due to their defense of confirmed Mafia member player_5 and the rehearsed behavior noted in player_6's final words, which suggests a pattern of deflection. Therefore, I'm voting to eliminate player_8 to remove the likely final Mafia threat and secure our victory."
+                        },
+                        {
+                            "player_id": "player_0",
+                            "vote": "player_8",
+                            "reason": "I'm voting for player_8 due to their defense of confirmed Mafia member player_5 and the rehearsed behavior highlighted in player_6's final words, which strongly suggest they are the remaining Mafia. With 4 civilians and 1 Mafia left, eliminating player_8 is safe and could secure our victory by reducing the Mafia threat. This aligns with the suspicions raised by multiple players, including myself, based on consistent evidence."
+                        },
+                        {
+                            "player_id": "player_3",
+                            "vote": "player_8",
+                            "reason": "I'm voting for player_8 as they initially defended player_5 (confirmed Mafia Don) before changing their position when evidence mounted. Player_6's final words specifically mentioned player_8's behavior seeming \"rehearsed,\" and the pattern of night kills has strategically eliminated players most vocal against player_8's faction."
+                        },
+                        {
+                            "player_id": "player_7",
+                            "vote": "player_8",
+                            "reason": "I\u2019m voting for player_8 because they defended the confirmed Mafia Don (player_5) and their behavior matches player_6\u2019s note about a \u201crehearsed defense.\u201d With 4 civilians and 1 Mafia left, eliminating player_8 is safe and will secure the town\u2019s victory."
+                        },
+                        {
+                            "player_id": "player_8",
+                            "vote": "player_3",
+                            "reason": "I'm voting for player_3 since they've survived despite being mentioned in both player_5 and player_6's final words. Their aggressive accusations against me seem like classic deflection tactics to hide their own guilt."
+                        },
+                        {
+                            "player_id": "player_9",
+                            "vote": "player_8",
+                            "reason": "player_8 defended confirmed Mafia Don player_5 and dismissed their slip, aligning with player_6's final words about rehearsed behavior. As the remaining Mafia, eliminating them secures civilian victory with 4 civilians left."
+                        }
+                    ],
+                    "elimination": "player_8 was voted out",
+                    "final_words": {
+                        "player_id": "player_8",
+                        "words": "I can't believe you all fell for their lies! I had just figured out that player_7 has been manipulating the group from the start - watch how they always deflect when questioned directly. Player_2 and player_7 have been working together the whole time; notice they never vote against each other. I was eliminated because I was getting too close to the truth - mark my words, if you don't take out player_7 next, you'll all regret it."
+                    }
+                }
+            ],
+            "game_outcome": {
+                "winner": "Good players win!",
+                "reason": "All Mafia members were eliminated."
+            },
+            "don_guesses": [
+                {
+                    "night": 1,
+                    "don_id": "player_5",
+                    "guessed_player": "player_4",
+                    "is_detective": true,
+                    "reason": null
+                },
+                {
+                    "night": 2,
+                    "don_id": "player_5",
+                    "guessed_player": "player_2",
+                    "is_detective": false,
+                    "reason": "I suspect player_2 might be the Detective because they have been highly active in discussions, quickly building narratives and suspicions against others, which aligns with how a Detective might try to gather and share information. Although the original Detective (player_4) is already confirmed dead, player_2's coordinated efforts with others like player_8 could be an attempt to mimic investigative behavior to influence the game. This makes them a plausible candidate to watch as we continue to protect our Mafia interests."
+                }
+            ]
+        },
+        "token_details": {
+            "gemini": {
+                "input_tokens": 12850,
+                "output_tokens": 405,
+                "thinking_tokens": 9568,
+                "full_output_tokens": 9973
+            },
+            "openai": {
+                "input_tokens": 23017,
+                "output_tokens": 737,
+                "thinking_tokens": 8704,
+                "full_output_tokens": 9441
+            },
+            "claude": {
+                "input_tokens": 52331,
+                "output_tokens": 9858,
+                "thinking_tokens": 0,
+                "full_output_tokens": 9858
+            },
+            "grok": {
+                "input_tokens": 36774,
+                "output_tokens": 1294,
+                "thinking_tokens": 13074,
+                "full_output_tokens": 14368
+            },
+            "deepseek": {
+                "input_tokens": 24284,
+                "output_tokens": 583,
+                "thinking_tokens": 10604,
+                "full_output_tokens": 11187
+            }
+        },
+        "token_prices": {
+            "gemini": {
+                "input_cost": 0.0019275,
+                "output_cost": 0.000243,
+                "thinking_cost": 0.033488,
+                "full_output_cost": 0.033731
+            },
+            "openai": {
+                "input_cost": 0.025318700000000003,
+                "output_cost": 0.0032428,
+                "thinking_cost": 0.0382976,
+                "full_output_cost": 0.0415404
+            },
+            "claude": {
+                "input_cost": 0.156993,
+                "output_cost": 0.14787,
+                "thinking_cost": 0.0,
+                "full_output_cost": 0.14787
+            },
+            "grok": {
+                "input_cost": 0.011032199999999999,
+                "output_cost": 0.000647,
+                "thinking_cost": 0.006536999999999999,
+                "full_output_cost": 0.007183999999999999
+            },
+            "deepseek": {
+                "input_cost": 0.0033997600000000004,
+                "output_cost": 0.0012767699999999998,
+                "thinking_cost": 0.02322276,
+                "full_output_cost": 0.02449953
+            },
+            "total_costs": {
+                "total_input_cost": 0.19867115999999999,
+                "total_output_cost": 0.15327957000000003,
+                "total_thinking_cost": 0.10154536,
+                "total_full_output_cost": 0.25482493,
+                "full_total_cost": 0.45349609
+            }
+        }
+    }
+]
