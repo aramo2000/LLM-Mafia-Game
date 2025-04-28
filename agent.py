@@ -1,10 +1,8 @@
-import random
 import re
 import time
 from typing import List
 import config
 import prompts_constants
-from token_utils import count_openai_input_tokens, count_openai_output_tokens
 
 
 class Agent:

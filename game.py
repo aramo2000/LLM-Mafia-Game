@@ -56,12 +56,20 @@ class MafiaGame:
         self._initialize_players()
 
     @classmethod
-    def from_llm_list(cls, llm_names: list[str]):
+    def from_llm_list(cls, llm_names: list[str], preassigned_roles: list[str] = None):
         num_players = len(llm_names)
         assert num_players == 10, "This game currently supports exactly 10 players."
 
-        roles = ["civilian"] * 6 + ["detective"] + ["mafia"] * 2 + ["don"]
-        random.shuffle(roles)
+        if preassigned_roles:
+            assert len(preassigned_roles) == 10, "Need 10 preassigned roles."
+            roles = preassigned_roles.copy()
+        else:
+            roles = ["civilian"] * 6 + ["detective"] + ["mafia"] * 2 + ["don"]
+            random.shuffle(roles)
+        # Now shuffle players and roles together
+        combined = list(zip(llm_names, roles))
+        random.shuffle(combined)
+        llm_names, roles = zip(*combined)
 
         mafia_indices = [i for i, role in enumerate(roles) if role == "mafia"]
         don_index = next(i for i, role in enumerate(roles) if role == "don")
