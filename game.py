@@ -372,7 +372,7 @@ class MafiaGame:
             return True
         return False
 
-    # @retry()
+    @retry()
     def run(self) -> str:
         while not self.check_win_condition():
             print(self.game_log)
