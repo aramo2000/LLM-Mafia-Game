@@ -335,7 +335,10 @@ class MafiaGame:
         else:
             self.alive[most_votes_player] = False
             self.players[most_votes_player].status = "dead"
-            final_words = self.players[most_votes_player].final_words(self.game_log, cause_of_death="vote")
+            if self.players[most_votes_player].role == "civilian" and self.day_count == 1:
+                final_words = ""
+            else:
+                final_words = self.players[most_votes_player].final_words(self.game_log, cause_of_death="vote")
             self.game_log += f"\nDay: player_{most_votes_player} was voted out by the town/players of the game"
             self.game_log += f"\nFinal words from player_{most_votes_player}: {final_words}"
             # Log in JSON
