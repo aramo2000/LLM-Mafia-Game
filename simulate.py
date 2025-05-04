@@ -5,7 +5,6 @@ from pprint import pprint
 from collections import Counter
 
 
-
 def validate_llms_and_roles(llms_lists, roles_tuples, number_of_games):
     # Predefined target role counts (you may change this according to your target numbers)
     target_detective = number_of_games // 5
@@ -54,25 +53,25 @@ def validate_llms_and_roles(llms_lists, roles_tuples, number_of_games):
     return True
 
 
-
-
-def run_games_same_llm(llm_name: str, number_of_games: int):
+def run_games_same_llm(llm_name: str, number_of_games: int, json_name: str):
     games_total_record = []
     for i in range(number_of_games):
         game = MafiaGame(llm_name)
         if i != 0:
-            with open("games_total_record.json", "r") as file:
+            with open(json_name, "r") as file:
                 games_total_record = json.load(file)
         game.run()
         games_total_record.append(game.game_data)
-        with open("games_total_record.json", "w") as file:
+        with open(json_name, "w") as file:
             json.dump(games_total_record, file, indent=4)
     return games_total_record
 
 
 all_roles = []
 all_llms = []
-def run_games_different_llms(number_of_games: int):
+
+
+def run_games_different_llms(number_of_games: int, json_name: str):
     llms = ["openai", "gemini", "grok", "claude", "deepseek"]
 
     # Each LLM will have this many total role assignments over all games
@@ -82,7 +81,9 @@ def run_games_different_llms(number_of_games: int):
     target_civilian = (6 * number_of_games) // 5
 
     # Track remaining role counts per LLM
-    role_counts = {llm: {"detective": target_detective, "don": target_don, "mafia": target_mafia, "civilian": target_civilian} for llm in llms}
+    role_counts = {
+        llm: {"detective": target_detective, "don": target_don, "mafia": target_mafia, "civilian": target_civilian} for
+        llm in llms}
 
     all_assigned_llms = []
     games_total_record = []
@@ -110,7 +111,6 @@ def run_games_different_llms(number_of_games: int):
                     return None, None
 
                 candidates = players.copy()
-
 
                 idx, llm = pick_player("detective", candidates)
                 assert llm is not None, "No available LLM for Detective!"
@@ -150,22 +150,24 @@ def run_games_different_llms(number_of_games: int):
     first = False
     for llms_row in all_assigned_llms:
         # Create game with controlled roles
-        roles = ["detective", "don", "mafia", "mafia", "civilian", "civilian", "civilian", "civilian", "civilian", "civilian"]
+        roles = ["detective", "don", "mafia", "mafia", "civilian", "civilian", "civilian", "civilian", "civilian",
+                 "civilian"]
         game = MafiaGame.from_llm_list(llm_names=llms_row, preassigned_roles=roles)
         # all_llms.append([player.llm_name for player in game.players])
         # all_roles.append(game.roles)
-    # print(validate_llms_and_roles(all_llms, all_roles, number_of_games))
+        # print(validate_llms_and_roles(all_llms, all_roles, number_of_games))
         if first:
             first = True
-            with open("games_total_record.json", "r") as file:
+            with open(json_name, "r") as file:
                 games_total_record = json.load(file)
         game.run()
         games_total_record.append(game.game_data)
-        with open("games_total_record.json", "w") as file:
+        with open(json_name, "w") as file:
             json.dump(games_total_record, file, indent=4)
 
-run_games_different_llms(20)
-# run_games_same_llm(llm_name="openai", number_of_games=1)
+
+run_games_different_llms(20, "games.json")
+# run_games_same_llm(llm_name="openai", number_of_games=1, "games.json")
 
 # number_of_games = 1
 # games_total_record = []
