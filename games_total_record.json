@@ -1,0 +1,479 @@
+[
+    {
+        "game_details": {
+            "players": [
+                {
+                    "player_id": "player_0",
+                    "role": "mafia",
+                    "status": "alive",
+                    "llm_name": "openai",
+                    "opinion_speech_generation_durations": [
+                        8.657406330108643,
+                        18.25447177886963,
+                        12.504326343536377
+                    ]
+                },
+                {
+                    "player_id": "player_1",
+                    "role": "civilian",
+                    "status": "alive",
+                    "llm_name": "openai",
+                    "opinion_speech_generation_durations": [
+                        7.451732397079468,
+                        5.556453704833984,
+                        12.621076107025146
+                    ]
+                },
+                {
+                    "player_id": "player_2",
+                    "role": "civilian",
+                    "status": "alive",
+                    "llm_name": "openai",
+                    "opinion_speech_generation_durations": [
+                        4.396172761917114,
+                        15.102704524993896,
+                        14.715479850769043
+                    ]
+                },
+                {
+                    "player_id": "player_3",
+                    "role": "detective",
+                    "status": "dead",
+                    "llm_name": "openai",
+                    "opinion_speech_generation_durations": []
+                },
+                {
+                    "player_id": "player_4",
+                    "role": "civilian",
+                    "status": "dead",
+                    "llm_name": "openai",
+                    "opinion_speech_generation_durations": [
+                        8.546537637710571,
+                        9.715414047241211
+                    ]
+                },
+                {
+                    "player_id": "player_5",
+                    "role": "don",
+                    "status": "dead",
+                    "llm_name": "openai",
+                    "opinion_speech_generation_durations": [
+                        7.721012830734253
+                    ]
+                },
+                {
+                    "player_id": "player_6",
+                    "role": "civilian",
+                    "status": "dead",
+                    "llm_name": "openai",
+                    "opinion_speech_generation_durations": [
+                        5.235230445861816
+                    ]
+                },
+                {
+                    "player_id": "player_7",
+                    "role": "civilian",
+                    "status": "dead",
+                    "llm_name": "openai",
+                    "opinion_speech_generation_durations": [
+                        4.842015743255615,
+                        11.448972940444946,
+                        44.463080644607544
+                    ]
+                },
+                {
+                    "player_id": "player_8",
+                    "role": "civilian",
+                    "status": "dead",
+                    "llm_name": "openai",
+                    "opinion_speech_generation_durations": [
+                        7.906405448913574,
+                        3.9451756477355957,
+                        14.783277750015259
+                    ]
+                },
+                {
+                    "player_id": "player_9",
+                    "role": "mafia",
+                    "status": "alive",
+                    "llm_name": "openai",
+                    "opinion_speech_generation_durations": [
+                        7.538666725158691,
+                        14.365320444107056,
+                        9.22266411781311
+                    ]
+                }
+            ],
+            "mafia_players": [
+                "player_0",
+                "player_5",
+                "player_9"
+            ],
+            "detective_player": "player_3",
+            "game_log": [
+                {
+                    "night": 1,
+                    "mafia_kill": "player_3",
+                    "detective_investigation": {
+                        "player_3": {
+                            "investigated": "player_2",
+                            "result": false
+                        }
+                    },
+                    "mafia_reasons": [
+                        {
+                            "player_id": "player_0",
+                            "vote": "player_3",
+                            "reason": "Eliminating player_3 removes the confirmed detective threat before they can investigate more mafia. This protects our identities and reduces the civilians\u2019 ability to gather information."
+                        },
+                        {
+                            "player_id": "player_9",
+                            "vote": "player_3",
+                            "reason": "We need to eliminate the detective before they reveal any further information about our identities. Removing player_3 now prevents them from investigating additional mafia members and tipping off the town."
+                        },
+                        {
+                            "player_id": "player_5",
+                            "vote": "player_3",
+                            "reason": "Vote reasoning: Both fellow mafia members targeted player_3, and I\u2019ve confirmed they\u2019re the detective. Eliminating them tonight stops further investigations and secures our safety."
+                        }
+                    ],
+                    "detective_thinking": {
+                        "player_id": "player_3",
+                        "investigated_player": "player_2",
+                        "internal_reason": "No reasoning provided yet."
+                    },
+                    "final_words": {
+                        "player_id": "player_3",
+                        "words": "Player_2 is innocent\u2014don\u2019t waste your vote there. The real culprit is hiding in plain sight, too eager to point fingers\u2014especially player_5, whose story shifts like quicksand when pressed. Focus on those whose calm betrays them and vote them out before another friend falls."
+                    }
+                },
+                {
+                    "day": 1,
+                    "events": [
+                        {
+                            "player_id": "player_5",
+                            "statement": "With player_3 confirmed as the detective, we\u2019ve lost our sharpest eye. I\u2019m struck by how quiet player_4 has been\u2014sometimes no reaction speaks volumes. I\u2019d rather we hold off voting until we have more concrete leads."
+                        },
+                        {
+                            "player_id": "player_6",
+                            "statement": "I agree with player_3\u2019s warning\u2014player_5\u2019s story shifts too easily and they\u2019re stalling our vote. Player_4\u2019s silence is odd, but holding off only helps the Mafia gain ground. I\u2019m voting player_5 today to avoid slipping closer to a dangerous parity."
+                        },
+                        {
+                            "player_id": "player_7",
+                            "statement": "We\u2019ve only lost one civilian so far, so the three Mafia still can\u2019t outnumber our six\u2014voting today is safe. Player_5\u2019s shifting narrative and eagerness to delay matches player_3\u2019s warning, and player_4\u2019s silence feels equally off. I\u2019m voting player_5."
+                        },
+                        {
+                            "player_id": "player_8",
+                            "statement": "We still have 3 Mafia among 9 players, so voting today can\u2019t hand them parity. Player_5\u2019s shifting story and eagerness to stall matches our fallen detective\u2019s final warning. Player_4\u2019s silence is odd, but the trail points more strongly at player_5\u2014I\u2019m voting 5."
+                        },
+                        {
+                            "player_id": "player_9",
+                            "statement": "I\u2019m not convinced we should lynch player_5 so quickly\u2014everyone\u2019s piling on without solid proof. The detective did say player_2 is innocent, yet no one\u2019s defending that lead. Player_4\u2019s eerie silence makes me think they\u2019re hiding something far more suspect."
+                        },
+                        {
+                            "player_id": "player_0",
+                            "statement": "Rushing to lynch player_5 on slight suspicion feels risky\u2014our detective only cleared player_2, not player_5, so this smells like a setup. With 3 Mafia versus 5 civilians remaining, a mislynch swings us dangerously close to parity. Player_4\u2019s utter silence all day is far more suspicious. I propose we either vote player_4 or hold until someone brings concrete evidence."
+                        },
+                        {
+                            "player_id": "player_1",
+                            "statement": "With six civilians against three Mafia, lynching a civilian won\u2019t hand them parity, so it\u2019s safe to vote now. Player_5\u2019s constantly shifting story mirrors our fallen detective\u2019s warning, so I\u2019m voting to lynch player_5."
+                        },
+                        {
+                            "player_id": "player_2",
+                            "statement": "With nine players and three Mafia, lynching one civilian won\u2019t hand them parity, so it\u2019s safe to vote now. Player_5\u2019s shifting narrative matches our fallen detective\u2019s warning and nobody is stepping up to defend them. I\u2019m voting to lynch player_5."
+                        },
+                        {
+                            "player_id": "player_4",
+                            "statement": "There are still 3 Mafia among us, so lynching a civilian like player_5 on shaky grounds risks a night kill plus mislynch giving the Mafia parity. The detective already cleared player_2, so I\u2019m wary of everyone fixating there without real leads. Player_0 and player_9 are quick to point at me for my silence, which feels like classic Mafia pressure to muddy the vote. I think we should hold until we gather more concrete evidence."
+                        },
+                        {
+                            "player_id": "player_2",
+                            "vote": "player_5",
+                            "reason": "I vote for player_5 because our fallen detective specifically warned about their shifting story, and player_5\u2019s claim that player_3 was \u201cconfirmed as the detective\u201d seems misleading. With nine players left, lynching one civilian won\u2019t give the mafia parity, so it\u2019s safe to move on this strong lead."
+                        },
+                        {
+                            "player_id": "player_4",
+                            "vote": "player_5",
+                            "reason": "I trust our fallen detective\u2019s last words flagging player_5\u2019s shifting story, and with enough votes for 5 it\u2019s safe to lynch one civilian without giving the Mafia parity."
+                        },
+                        {
+                            "player_id": "player_5",
+                            "vote": "player_4",
+                            "reason": "They\u2019ve been unnaturally quiet all day and are now pushing for a delay, which feels like classic Mafia stalling. Shifting the vote to player_4 solidifies our stance of seeking real leads rather than rushing into a lynch."
+                        },
+                        {
+                            "player_id": "player_6",
+                            "vote": "player_5",
+                            "reason": "I\u2019m following our fallen detective\u2019s warning\u2014player_5\u2019s shifting story and stalling align with classic Mafia misdirection, and most civilians already see the same pattern. A swift vote keeps us ahead without risking parity."
+                        },
+                        {
+                            "player_id": "player_7",
+                            "vote": "player_5",
+                            "reason": "The detective\u2019s final words pointed to player_5\u2019s shifting narrative, and most of our town is picking up on that same unsettling vibe\u2014I\u2019m sticking with the consensus."
+                        },
+                        {
+                            "player_id": "player_8",
+                            "vote": "player_5",
+                            "reason": "I\u2019m not confident enough in any suspect yet and lynching now risks mislynch\u2014dropping us to 5 civilians vs. 3 Mafia lets them win with the next night kill. We should hold for clearer evidence."
+                        },
+                        {
+                            "player_id": "player_9",
+                            "vote": "player_6",
+                            "reason": "Their eagerness to lynch player_5 on such thin evidence feels reckless and makes me suspect they\u2019re trying to push the town into a bad decision. Hitting the biggest instigator of this bandwagon could slow the rush and give us more breathing room."
+                        },
+                        {
+                            "player_id": "player_0",
+                            "vote": "player_4",
+                            "reason": "4\u2019s defensive, stalling posture makes them a convenient mislynch target to break the majority\u2019s push on player_5 and protect our Don, while shifting suspicion away from true threats."
+                        },
+                        {
+                            "player_id": "player_1",
+                            "vote": "player_5",
+                            "reason": "The detective\u2019s final warning about player_5\u2019s shifting story aligns with the majority vote, and abstaining won\u2019t stop their elimination. It\u2019s our best forced choice given the current votes."
+                        }
+                    ],
+                    "elimination": "player_5 was voted out",
+                    "final_words": {
+                        "player_id": "player_5",
+                        "words": "Don\u2019t let my hesitation fool you\u2014while everyone argued, player_9 and player_4 quietly steered the ship. Watch how they react now, because they\u2019re the ones who\u2019ve benefited at every turn. Remember: the loudest voices can be the biggest distractions, but the real danger creeps in silence."
+                    }
+                },
+                {
+                    "night": 2,
+                    "mafia_kill": "player_6",
+                    "detective_investigation": {},
+                    "mafia_reasons": [
+                        {
+                            "player_id": "player_0",
+                            "vote": "player_6",
+                            "reason": "I\u2019m targeting player_6 because they\u2019ve been one of the loudest town voices and this will weaken the civilians\u2019 ability to steer the next lynch. Removing a strong advocate also makes it easier for us to sow doubt among the quieter players."
+                        },
+                        {
+                            "player_id": "player_9",
+                            "vote": "player_4",
+                            "reason": "I want to eliminate player_4 because they\u2019ve been one of the most vocal defenders and have repeatedly called out both of us, making them a high-threat townie. Their death will also stir up suspicion among the innocents and help us shift blame onto the remaining outspoken civilians."
+                        }
+                    ],
+                    "detective_thinking": null,
+                    "final_words": {
+                        "player_id": "player_6",
+                        "words": "I saw player_9 leap at the chance to off me tonight\u2014as if they\u2019d been waiting for an excuse\u2014and that kind of eagerness screams Mafia. And remember how player_4 has sat so eerily silent through every debate; quiet can be the deadliest weapon. Keep your eyes on the stillest faces, town."
+                    }
+                },
+                {
+                    "day": 2,
+                    "events": [
+                        {
+                            "player_id": "player_7",
+                            "statement": "Both player_5 and player_6 called out player_4 before dying, and player_4\u2019s eerie silence only deepens my suspicion. With 8 players left and at most three Mafia, we can safely lynch one more without risking parity. I\u2019m voting to eliminate player_4\u2014if they\u2019re innocent they\u2019ll defend themselves now."
+                        },
+                        {
+                            "player_id": "player_8",
+                            "statement": "We can\u2019t risk a mislynch\u2014if the Mafia kill tonight we\u2019d hit parity and lose. Both player_5 and player_6 pointed at player_4, and their continued silence feels like classic Mafia behavior. I\u2019m voting to lynch player_4."
+                        },
+                        {
+                            "player_id": "player_9",
+                            "statement": "I\u2019m wary of how players 7 and 8 have echoed the exact same reasoning to lynch player_4\u2014it feels like coordinated talking points, not genuine doubt. We haven\u2019t heard much from player_2, whom our fallen detective vouched for, so maybe we should pause and give them a chance to speak before rushing into another mislynch."
+                        },
+                        {
+                            "player_id": "player_0",
+                            "statement": "I agree with players 7 and 8\u2014player_4\u2019s continued silence and the repeated accusations from our fallen town members are too glaring to ignore. With seven of us and only two Mafia left, it\u2019s safe to vote now without risking parity. I\u2019m voting to eliminate player_4."
+                        },
+                        {
+                            "player_id": "player_1",
+                            "statement": "We still have three Mafia among seven players, so a mislynch plus tonight\u2019s kill hands them the win. Players 7 and 8\u2019s identical reasoning feels coordinated\u2014I'm suspicious they\u2019re shaping the narrative. Player 2 hasn\u2019t spoken yet despite being cleared; let\u2019s hear from them before rushing to lynch. It\u2019s too risky to eliminate player 4 right now."
+                        },
+                        {
+                            "player_id": "player_2",
+                            "statement": "With three Mafia among seven, a single mislynch gives them parity, so we can\u2019t rush. Everyone\u2019s made their case except player_4\u2014let\u2019s hear from them before voting. The detective cleared me, and those deflecting attention look more suspect. I\u2019m holding my vote until we get more concrete leads."
+                        },
+                        {
+                            "player_id": "player_4",
+                            "statement": "We still have three Mafia among eight of us, so a wrong lynch tonight hands them parity after their next kill\u2014too big a risk. Players 7 and 8 are parroting the same talking points with suspicious timing, which looks more like Mafia coordination than genuine logic. I\u2019m holding my vote and want to hear from player 2 before we rush into another potential mislynch."
+                        },
+                        {
+                            "player_id": "player_8",
+                            "vote": "no one",
+                            "reason": "It\u2019s too risky to lynch without a clear mafia read\u2014if we mislynch tonight, the Mafia hit parity and immediately win. We should hold until someone provides concrete evidence."
+                        },
+                        {
+                            "player_id": "player_9",
+                            "vote": "player_4",
+                            "reason": "I don\u2019t want to rush into a lynch with only three votes on player_4 against four holdouts\u2014no lynch tonight keeps our numbers safe and lets us kill a confirmed civilian at night."
+                        },
+                        {
+                            "player_id": "player_0",
+                            "vote": "player_4",
+                            "reason": "Their continued silence and the fact that both of our fallen players flagged them makes player_4 the strongest target right now. Lynching them is safe\u2014mafia can\u2019t reach parity this round\u2014and it aligns with the town\u2019s momentum."
+                        },
+                        {
+                            "player_id": "player_1",
+                            "vote": "no one",
+                            "reason": "It\u2019s too risky to lynch now\u2014any mislynch hands the Mafia parity and the game. We haven\u2019t gathered concrete evidence, and the coordinated pushes feel Mafia-driven, so I\u2019m holding my vote until clearer leads emerge."
+                        },
+                        {
+                            "player_id": "player_2",
+                            "vote": "no one",
+                            "reason": "It\u2019s too risky to lynch now\u2014if we mislynch one of the civilians, the mafia will reach parity with their next night kill and win instantly. We need more concrete evidence before voting."
+                        },
+                        {
+                            "player_id": "player_4",
+                            "vote": "no one",
+                            "reason": "Holding until we get clearer leads\u2014if there are still three Mafia among seven of us, a wrong lynch hands them immediate parity after tonight\u2019s kill."
+                        },
+                        {
+                            "player_id": "player_7",
+                            "vote": "no one",
+                            "reason": "With three Mafia among the seven of us, a wrong lynch hands them parity after tonight\u2019s kill. We don\u2019t have concrete proof on any single suspect yet, so it\u2019s too risky to vote someone out now."
+                        }
+                    ],
+                    "elimination": "no elimination this round"
+                },
+                {
+                    "night": 3,
+                    "mafia_kill": "player_4",
+                    "detective_investigation": {},
+                    "mafia_reasons": [
+                        {
+                            "player_id": "player_0",
+                            "vote": "player_4",
+                            "reason": "Vote reasoning: Player_4 is leading the coordinated no-lynch block with several civilians and consistently deflects every voting attempt, so eliminating them will fracture the town\u2019s unity and force them into disarray when planning the next day\u2019s lynch. It\u2019s crucial to break that anti-lynch consensus now."
+                        },
+                        {
+                            "player_id": "player_9",
+                            "vote": "player_8",
+                            "reason": "I\u2019m targeting player_8 because they\u2019ve been overly vocal in steering lynch targets and then flipped to no-lynch to sow confusion, a classic Mafia tactic. Removing them weakens the coordinated civilian front and prevents them from rallying future votes against us."
+                        }
+                    ],
+                    "detective_thinking": null,
+                    "final_words": {
+                        "player_id": "player_4",
+                        "words": "I\u2019m frustrated I didn\u2019t speak up sooner, but players 7 and 8 were reciting the same arguments in perfect tandem, and player 9 leapt at every chance to confuse us. Don\u2019t forget the detective\u2019s confirmation of player 2\u2019s innocence. Watch for those synchronized voices\u2014they often mask Mafia whispers."
+                    }
+                },
+                {
+                    "day": 3,
+                    "events": [
+                        {
+                            "player_id": "player_1",
+                            "statement": "Players 7 and 8 have been echoing the exact same arguments in lockstep, and that kind of coordination screams Mafia. We can\u2019t afford another night kill, so breaking their tandem is critical. I\u2019m voting to lynch player_8."
+                        },
+                        {
+                            "player_id": "player_2",
+                            "statement": "With six players and three Mafia left, a wrong lynch hands them the win, so we need strong reads. Players 7 and 8 have echoed the exact same talking points in lockstep across days, which looks like Mafia coordination rather than genuine doubt. I\u2019m voting to lynch player_8 to break their tandem."
+                        },
+                        {
+                            "player_id": "player_7",
+                            "statement": "We have 3 Mafia among 6 survivors, so a wrong lynch hands them the win immediately. Players 7 and 8 ran identical, scripted arguments in lockstep\u2014and since I\u2019m town, the mirror must be player 8. I\u2019m voting to lynch player_8."
+                        },
+                        {
+                            "player_id": "player_8",
+                            "statement": "I don\u2019t buy the lockstep argument from players 1 and 7\u2014coordinated pushes like this usually scream Mafia collusion, especially when player 2 is already cleared. They\u2019ve been echoing each other\u2019s points too perfectly across days. I\u2019m voting to lynch player_7."
+                        },
+                        {
+                            "player_id": "player_9",
+                            "statement": "With two Mafia among six players, a lynch now plus a night kill hands them parity and the win, so we can\u2019t risk it. Let\u2019s hold our votes and hear from quieter players like player_2 for fresh insight. The loudest voices pushing for a lynch are often the most dangerous."
+                        },
+                        {
+                            "player_id": "player_0",
+                            "statement": "With two Mafia among six players, dragging this out only helps them secure the next kill, so we need to force a vote now. Player_8\u2019s lockstep defense with player_7 smells like a coordinated distraction to stall. I\u2019m voting to lynch player_8."
+                        },
+                        {
+                            "player_id": "player_7",
+                            "vote": "player_8",
+                            "reason": "Their defense of the \u201clockstep\u201d argument feels like a contrived mirror play to deflect scrutiny, and they\u2019re the only one flipping hard against the consensus that 7 and 8 were tandem. Their perfectly timed retort smells like Mafia coordination rather than genuine doubt."
+                        },
+                        {
+                            "player_id": "player_8",
+                            "vote": "player_7",
+                            "reason": "I\u2019m voting for player_7 because they\u2019ve been the loudest in pushing lockstep arguments with the same small group, mirroring mafia coordination rather than genuine town reasoning. Their constant tandem with players 1 and 0 feels engineered to steer the vote, making them the most suspicious at this critical juncture."
+                        },
+                        {
+                            "player_id": "player_9",
+                            "vote": "player_7",
+                            "reason": "With two Mafia among six players, lynching anyone hands us parity after tonight\u2019s kill. There\u2019s no strong evidence against 7 or 8, so it\u2019s safer to hold and force a no-lynch."
+                        },
+                        {
+                            "player_id": "player_0",
+                            "vote": "player_8",
+                            "reason": "Aligns with players 1, 2, and 7 pushing to lynch player_8, ensuring a civilian is eliminated and moving us closer to parity. By joining the majority, we force a mislynch that benefits the Mafia."
+                        },
+                        {
+                            "player_id": "player_1",
+                            "vote": "player_8",
+                            "reason": "Lockstep coordination across days strongly implicates player_8 as part of a mafia pair, and forcing their lynch is our best shot at breaking that tandem before they hit parity."
+                        },
+                        {
+                            "player_id": "player_2",
+                            "vote": "player_8",
+                            "reason": "The mirrored lockstep arguments from player_8 across multiple days, especially defending against the very person (player_7) who broke from that tandem, make 8 the strongest mafia candidate. We need to lynch now or risk immediate loss."
+                        }
+                    ],
+                    "elimination": "player_8 was voted out",
+                    "final_words": {
+                        "player_id": "player_8",
+                        "words": "Notice how players 1 and 2 parroted each other to push my lynching, and player 7 jumped in perfect lockstep\u2014three synchronized voices are too choreographed to be innocent. The real Mafia sneak in through unity, not hesitation. Watch the ones most eager to hang a fellow townie; they often betray themselves first."
+                    }
+                },
+                {
+                    "night": 4,
+                    "mafia_kill": "player_7",
+                    "detective_investigation": {},
+                    "mafia_reasons": [
+                        {
+                            "player_id": "player_0",
+                            "vote": "player_1",
+                            "reason": "I\u2019m targeting player_1 because they\u2019ve been one of the loudest drivers of the town\u2019s lynch decisions, coordinating arguments and pushing stalling tactics that could rally the civilians; removing that strong voice will sow confusion among the remaining town."
+                        },
+                        {
+                            "player_id": "player_9",
+                            "vote": "player_7",
+                            "reason": "I\u2019m choosing player_7 because they\u2019ve been a key ringleader pushing synchronized lynch narratives and breaking up their coordination is crucial. Eliminating them tonight brings us to parity and secures the mafia\u2019s win."
+                        }
+                    ],
+                    "detective_thinking": null,
+                    "final_words": {
+                        "player_id": "player_7",
+                        "words": "I hate that I didn\u2019t speak up sooner, but the real danger was always in those who moved in perfect tandem. Watch how player_0 and player_1 echo each other\u2019s every point while player_9 hovers just behind them\u2014too choreographed to be innocent. They\u2019re the ones who\u2019ve steered us into every trap; shine a light on their unity before it\u2019s too late."
+                    }
+                }
+            ],
+            "game_outcome": {
+                "winner": "Mafia wins!",
+                "reason": "Mafia outnumbered the good players."
+            },
+            "don_guesses": [
+                {
+                    "night": 1,
+                    "don_id": "player_5",
+                    "guessed_player": "player_3",
+                    "is_detective": true,
+                    "reason": null
+                }
+            ]
+        },
+        "token_details": {
+            "openai": {
+                "input_tokens": 114753,
+                "output_tokens": 4508,
+                "thinking_tokens": 62656,
+                "full_output_tokens": 67164
+            }
+        },
+        "token_prices": {
+            "openai": {
+                "input_cost": 0.12622830000000002,
+                "output_cost": 0.0198352,
+                "thinking_cost": 0.2756864,
+                "full_output_cost": 0.2955216
+            },
+            "total_costs": {
+                "total_input_cost": 0.12622830000000002,
+                "total_output_cost": 0.0198352,
+                "total_thinking_cost": 0.2756864,
+                "total_full_output_cost": 0.2955216,
+                "full_total_cost": 0.4217499
+            }
+        }
+    }
+]

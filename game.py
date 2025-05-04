@@ -228,7 +228,10 @@ class MafiaGame:
 
         self.alive[final_target] = False
         self.players[final_target].status = "dead"
-        final_words = self.players[final_target].final_words(self.game_log, cause_of_death="mafia")
+        if self.players[final_target].role == "civilian" and self.night_count == 1:
+            final_words = ""
+        else:
+            final_words = self.players[final_target].final_words(self.game_log, cause_of_death="mafia")
         self.game_log += f"\nNight {self.night_count}: Mafia killed player_{final_target}"
         self.game_log += f"\nFinal words from player_{final_target}: {final_words}"
 
@@ -335,10 +338,7 @@ class MafiaGame:
         else:
             self.alive[most_votes_player] = False
             self.players[most_votes_player].status = "dead"
-            if self.players[most_votes_player].role == "civilian" and self.day_count == 1:
-                final_words = ""
-            else:
-                final_words = self.players[most_votes_player].final_words(self.game_log, cause_of_death="vote")
+            final_words = self.players[most_votes_player].final_words(self.game_log, cause_of_death="vote")
             self.game_log += f"\nDay: player_{most_votes_player} was voted out by the town/players of the game"
             self.game_log += f"\nFinal words from player_{most_votes_player}: {final_words}"
             # Log in JSON
@@ -375,7 +375,6 @@ class MafiaGame:
     @retry()
     def run(self) -> str:
         while not self.check_win_condition():
-            print(self.game_log)
             self.night_phase()
             if self.check_win_condition():
                 break

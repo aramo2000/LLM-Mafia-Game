@@ -53,6 +53,9 @@ def validate_llms_and_roles(llms_lists, roles_tuples, number_of_games):
 
     return True
 
+
+
+
 def run_games_same_llm(llm_name: str, number_of_games: int):
     games_total_record = []
     for i in range(number_of_games):
@@ -162,6 +165,7 @@ def run_games_different_llms(number_of_games: int):
             json.dump(games_total_record, file, indent=4)
 
 run_games_different_llms(20)
+# run_games_same_llm(llm_name="openai", number_of_games=1)
 
 # number_of_games = 1
 # games_total_record = []
