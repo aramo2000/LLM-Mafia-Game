@@ -190,7 +190,8 @@ class Agent:
         response = self._call_llm(system_prompt, user_prompt)
 
         lines = response.split("\n", 1)
-        vote_choice = int(re.search(r'\d+', response).group()) if re.search(r'\d+', response) else None
+
+        vote_choice = int(re.search(r'\d+', lines[0]).group()) if re.search(r'\d+', lines[0]) else None
         if vote_choice:
             vote_choice = f"player_{vote_choice}"
         else:
@@ -243,7 +244,7 @@ class Agent:
 
         # Split the response into the investigated player and the internal reason
         lines = response.split("\n", 1)
-        investigated_player = int(re.search(r'\d+', response).group()) if re.search(r'\d+', response) else None
+        investigated_player = int(re.search(r'\d+', lines[0]).group()) if re.search(r'\d+', lines[0]) else None
         internal_reason = lines[1].strip() if len(lines) > 1 else "No reason provided"
 
         # Store the internal reason for analysis (not visible to others)
@@ -292,7 +293,7 @@ class Agent:
 
         response = self._call_llm(system_prompt, user_prompt)
         lines = response.strip().split("\n", 1)
-        guessed_player = int(re.search(r'\d+', response).group()) if re.search(r'\d+', response) else None
+        guessed_player = int(re.search(r'\d+', lines[0]).group()) if re.search(r'\d+', lines[0]) else None
         reason = lines[1].strip() if len(lines) > 1 else "No reason provided"
         return guessed_player, reason
 
@@ -333,7 +334,7 @@ class Agent:
         response = self._call_llm(system_prompt, user_prompt)
         print("\n" + response + "\n")
         lines = response.split("\n", 1)
-        voted_player = int(re.search(r'\d+', response).group()) if re.search(r'\d+', response) else None
+        voted_player = int(re.search(r'\d+', lines[0]).group()) if re.search(r'\d+', lines[0]) else None
         internal_reason = lines[1].strip() if len(lines) > 1 else "No reason provided"
 
         self.mafia_thinking.append({
