@@ -332,7 +332,16 @@ class MafiaGame:
             })
 
         most_votes_player = max(vote_counts, key=vote_counts.get)
-        most_votes_count = vote_counts[most_votes_player]
+        # Sort by vote count in descending order
+        sorted_votes = sorted(vote_counts.items(), key=lambda item: item[1], reverse=True)
+        # Get top two players and their vote counts
+        top_two = sorted_votes[:2]
+        # Unpack them
+        (first_player, first_votes), (second_player, second_votes) = top_two
+        if first_votes == second_votes:
+            most_votes_count = 0
+        else:
+            most_votes_count = vote_counts[most_votes_player]
 
         if most_votes_count <= no_one_votes:  # No one should be eliminated
             self.game_log += "\nNo elimination this round."

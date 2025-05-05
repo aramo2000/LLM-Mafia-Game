@@ -188,6 +188,8 @@ class Agent:
         YOU MUST RESPOND WITH THE EXAMPLE FORMAT, IF YOUR RESPONSE IS NOT ACCORDING TO THE EXAMPLE THEN YOU WILL FAIL YOUR TASK"""
 
         response = self._call_llm(system_prompt, user_prompt)
+        print(self.player_name)
+        print(response)
 
         lines = response.split("\n", 1)
 
