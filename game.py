@@ -230,10 +230,12 @@ class MafiaGame:
         self.players[final_target].status = "dead"
         if self.players[final_target].role == "civilian" and self.night_count == 1:
             final_words = ""
+            self.game_log += f"\nNight {self.night_count}: Mafia killed player_{final_target}"
         else:
             final_words = self.players[final_target].final_words(self.game_log, cause_of_death="mafia")
-        self.game_log += f"\nNight {self.night_count}: Mafia killed player_{final_target}"
-        self.game_log += f"\nFinal words from player_{final_target}: {final_words}"
+            self.game_log += f"\nNight {self.night_count}: Mafia killed player_{final_target}"
+            self.game_log += f"\nFinal words from player_{final_target}: {final_words}"
+
 
         # Add the mafia's internal thinking (reason) to the game log
         if hasattr(self, "game_data"):
