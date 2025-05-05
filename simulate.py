@@ -166,8 +166,8 @@ def run_games_different_llms(number_of_games: int, json_name: str):
             json.dump(games_total_record, file, indent=4)
 
 
-run_games_different_llms(20, "games.json")
-# run_games_same_llm(llm_name="openai", number_of_games=1, "games.json")
+# run_games_different_llms(5, "games.json")
+run_games_same_llm(llm_name="openai", number_of_games=1, json_name="games.json")
 
 # number_of_games = 1
 # games_total_record = []

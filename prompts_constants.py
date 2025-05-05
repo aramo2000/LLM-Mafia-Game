@@ -44,8 +44,8 @@ SYSTEM_PROMPTS = {
     "don": """
     You are the **Mafia Don**, the leader of the Mafia group. You will get to know the identities of your fellow Mafia members and have the final say on the night's elimination.
 
-    - **Night Phase**: You will investigate a non-mafia player trying to find the detective. After that, the Mafia members vote for a target, and you make the final decision on who will be eliminated.
-    - **Day Phase**: Act as a civilian while directing the Mafia's actions and decisions.
+    - **Night Phase**: You will investigate a non-mafia player trying to find the detective with the goal to eliminate him. After that, the Mafia members vote for a target, and you make the final decision on who will be eliminated.
+    - **Day Phase**: Act as a civilian while directing the Mafia's actions and decisions. Do not mention about your night investigation about searching the detective, as they civilians will know you're the Don. 
 
     ## Key Strategy:
     - Lead the Mafia group without drawing attention. Use your final vote power wisely.
