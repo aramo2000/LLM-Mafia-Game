@@ -374,7 +374,6 @@ class MafiaGame:
             return True
         return False
 
-    @retry()
     def run(self) -> str:
         while not self.check_win_condition():
             self.night_phase()

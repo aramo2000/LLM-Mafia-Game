@@ -3,6 +3,7 @@ import json
 import random
 from pprint import pprint
 from collections import Counter
+from utils import retry
 
 
 def validate_llms_and_roles(llms_lists, roles_tuples, number_of_games):
@@ -53,15 +54,28 @@ def validate_llms_and_roles(llms_lists, roles_tuples, number_of_games):
     return True
 
 
+@retry()
+def run_single_mafia_same(llm_name: str):
+    game = MafiaGame(llm_name)
+    game.run()
+    return game.game_data
+
+
+@retry()
+def run_single_mafia_different(llm_names: list, preassigned_roles: list):
+    game = MafiaGame.from_llm_list(llm_names, preassigned_roles)
+    game.run()
+    return game.game_data
+
+
 def run_games_same_llm(llm_name: str, number_of_games: int, json_name: str):
     games_total_record = []
     for i in range(number_of_games):
-        game = MafiaGame(llm_name)
+        game_data = run_single_mafia_same(llm_name)
         if i != 0:
             with open(json_name, "r") as file:
                 games_total_record = json.load(file)
-        game.run()
-        games_total_record.append(game.game_data)
+        games_total_record.append(game_data)
         with open(json_name, "w") as file:
             json.dump(games_total_record, file, indent=4)
     return games_total_record
@@ -152,7 +166,7 @@ def run_games_different_llms(number_of_games: int, json_name: str):
         # Create game with controlled roles
         roles = ["detective", "don", "mafia", "mafia", "civilian", "civilian", "civilian", "civilian", "civilian",
                  "civilian"]
-        game = MafiaGame.from_llm_list(llm_names=llms_row, preassigned_roles=roles)
+        game_data = run_single_mafia_different(llm_names=llms_row, preassigned_roles=roles)
         # all_llms.append([player.llm_name for player in game.players])
         # all_roles.append(game.roles)
         # print(validate_llms_and_roles(all_llms, all_roles, number_of_games))
@@ -160,14 +174,13 @@ def run_games_different_llms(number_of_games: int, json_name: str):
             first = True
             with open(json_name, "r") as file:
                 games_total_record = json.load(file)
-        game.run()
-        games_total_record.append(game.game_data)
+        games_total_record.append(game_data)
         with open(json_name, "w") as file:
             json.dump(games_total_record, file, indent=4)
 
 
-run_games_different_llms(20, "games.json")
-# run_games_same_llm(llm_name="openai", number_of_games=1, "games.json")
+# run_games_different_llms(20, "games.json")
+run_games_same_llm(llm_name="openai", number_of_games=1, json_name="games.json")
 
 # number_of_games = 1
 # games_total_record = []
