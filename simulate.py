@@ -179,8 +179,24 @@ def run_games_different_llms(number_of_games: int, json_name: str):
             json.dump(games_total_record, file, indent=4)
 
 
-# run_games_different_llms(20, "games.json")
-run_games_same_llm(llm_name="openai", number_of_games=1, json_name="games.json")
+# run_games_different_llms(10, "mafia_different_10s_1_p1.json")
+# run_games_same_llm(llm_name="openai", number_of_games=1, json_name="games.json")
+
+all_assigned_llms = [
+    ['deepseek', 'grok', 'openai', 'gemini', 'grok', 'deepseek', 'claude', 'claude', 'openai', 'gemini'],
+    ['grok', 'openai', 'deepseek', 'claude', 'grok', 'deepseek', 'gemini', 'claude', 'gemini', 'openai'],
+    ['deepseek', 'gemini', 'openai', 'claude', 'grok', 'grok', 'claude', 'deepseek', 'openai', 'gemini'],
+    ['gemini', 'gemini', 'deepseek', 'claude', 'openai', 'grok', 'openai', 'deepseek', 'claude', 'grok']
+]
+games_total_record = []
+for llms_row in all_assigned_llms:
+    # Create game with controlled roles
+    roles = ["detective", "don", "mafia", "mafia", "civilian", "civilian", "civilian", "civilian", "civilian",
+             "civilian"]
+    game_data = run_single_mafia_different(llm_names=llms_row, preassigned_roles=roles)
+    games_total_record.append(game_data)
+    with open("mafia_different_10s_1_p2.json", "w") as file:
+        json.dump(games_total_record, file, indent=4)
 
 # number_of_games = 1
 # games_total_record = []

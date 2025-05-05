@@ -3,6 +3,7 @@ import time
 from typing import List
 import config
 import prompts_constants
+from utils import retry
 
 
 class Agent:
@@ -40,6 +41,7 @@ class Agent:
             "llm_name": self.llm_name  # This ensures the LLM name is tracked
         }
 
+    @retry(retries=4, delay=10)
     def _call_llm(self, system_prompt: str, user_prompt: str) -> str:
         if self.llm_name == "openai":
             llm_response = config.OPENAI_CLIENT.chat.completions.create(
