@@ -71,7 +71,6 @@ def calculate_win_rates_different(folder_name, json_name):
             else:
                 win_ratio = 0
             llm_role_win_ratios[llm][role] = win_ratio
-    pprint(llm_role_counts)
 
     sorted_role_win_counts = {
         llm: {role: role_win_counts[llm][role] for role in ['mafia', 'don', 'detective', 'civilian']} for llm in
@@ -80,6 +79,7 @@ def calculate_win_rates_different(folder_name, json_name):
     win_counts = {"mafia_wins": win_counts_mafia, "civilian_wins": win_counts_civilian}
 
     win_rates_data = {
+        "llm_role_counts": llm_role_counts,
         "win_counts": win_counts,
         "role_win_counts": sorted_role_win_counts,
         "role_wins": all_llm_wins,
@@ -132,7 +132,7 @@ def calculate_win_rates_same(folder_name, json_name):
         total_wins = mafia_wins[llm]
         win_ratio = total_wins / total_games if total_games > 0 else 0
         llm_win_ratios[llm] = {
-            "win_ratio": win_ratio,
+            "mafia_win_ratio": win_ratio,
             "mafia_win": mafia_wins[llm],
             "civilians_win": mafia_losses[llm],
             "total_games": total_games
@@ -143,9 +143,3 @@ def calculate_win_rates_same(folder_name, json_name):
         json.dump(llm_win_ratios, file, indent=4)
 
     return llm_win_ratios
-
-
-folder_name_different = "generated_data_different"
-folder_name_same = "generated_data_same"
-# calculate_win_rates_different(folder_name_different, "win_rates_different.json")
-calculate_win_rates_same(folder_name_same, "win_rates_same.json")
