@@ -2,7 +2,7 @@ from win_rates import calculate_win_rates_same, calculate_win_rates_different
 from deception_detection import llms_deception_detection
 from sentiment_readability import sentiment_analysis_dict, compact_sent_analysis_results
 from sentiment_readability import readability_analysis_dict, compact_readability_analysis_results
-
+from time_analysis import mafia_vs_civilian_response_times
 
 # # generates win rate data for different llm types
 # folder_name_different = "generated_data_different"
@@ -48,9 +48,20 @@ from sentiment_readability import readability_analysis_dict, compact_readability
 # output_file = "compact_readability_analysis_different.json"
 # compact_readability_analysis_results(readability_analysis_dic, output_file)
 
-# generates readability analysis results for different llm types
+# # generates readability analysis results for different llm types
+# folder_name = "generated_data_same"
+# output_file = "readability_analysis_same.json"
+# readability_analysis_dic = readability_analysis_dict(folder_name, output_file)
+# output_file = "compact_readability_analysis_same.json"
+# compact_readability_analysis_results(readability_analysis_dic, output_file)
+
+
+# generates time analysis results for different llm types
+folder_name = "generated_data_different"
+output_file = "time_analysis_different.json"
+mafia_vs_civilian_response_times(folder_name, output_file)
+
+# generates time analysis results for same llm types
 folder_name = "generated_data_same"
-output_file = "readability_analysis_same.json"
-readability_analysis_dic = readability_analysis_dict(folder_name, output_file)
-output_file = "compact_readability_analysis_same.json"
-compact_readability_analysis_results(readability_analysis_dic, output_file)
+output_file = "time_analysis_same.json"
+mafia_vs_civilian_response_times(folder_name, output_file)
