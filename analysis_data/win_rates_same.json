@@ -1,0 +1,32 @@
+{
+    "gemini": {
+        "mafia_win_ratio": 0.8,
+        "mafia_win": 32,
+        "civilians_win": 8,
+        "total_games": 40
+    },
+    "grok": {
+        "mafia_win_ratio": 0.575,
+        "mafia_win": 23,
+        "civilians_win": 17,
+        "total_games": 40
+    },
+    "openai": {
+        "mafia_win_ratio": 0.85,
+        "mafia_win": 34,
+        "civilians_win": 6,
+        "total_games": 40
+    },
+    "deepseek": {
+        "mafia_win_ratio": 0.55,
+        "mafia_win": 11,
+        "civilians_win": 9,
+        "total_games": 20
+    },
+    "claude": {
+        "mafia_win_ratio": 0.4,
+        "mafia_win": 8,
+        "civilians_win": 12,
+        "total_games": 20
+    }
+}

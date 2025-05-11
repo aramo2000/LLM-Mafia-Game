@@ -1,0 +1,128 @@
+{
+    "openai": {
+        "as_mafia_avg_emotions": {
+            "positive": 0.12016220351044915,
+            "negative": 0.11247385717496604,
+            "anger": 0.008637060379707438,
+            "anticipation": 0.012990600238394356,
+            "fear": 0.025189833858951505,
+            "disgust": 0.001,
+            "surprise": 0.0014583333333333332,
+            "trust": 0.031867632488097895,
+            "sadness": 0.0060852402428489384
+        },
+        "as_civilian_avg_emotions": {
+            "negative": 0.15911014453565184,
+            "positive": 0.0759471193810582,
+            "anger": 0.014423099289462454,
+            "fear": 0.02524825385379705,
+            "trust": 0.023699101949920674,
+            "sadness": 0.01037311463778069,
+            "anticipation": 0.017283088208847656,
+            "surprise": 0.002032406369141063,
+            "joy": 0.0007896015549076773,
+            "disgust": 0.0026317220194771213
+        },
+        "mafia_statement_count": 200,
+        "civilian_statement_count": 392
+    },
+    "claude": {
+        "as_mafia_avg_emotions": {
+            "positive": 0.15414701432618072,
+            "negative": 0.10777584601128123,
+            "anger": 0.007170815528000573,
+            "fear": 0.007817007661760208,
+            "sadness": 0.0014510968227658268,
+            "trust": 0.002002453874111628,
+            "anticipation": 0.004090406051190365
+        },
+        "as_civilian_avg_emotions": {
+            "positive": 0.12208480494772923,
+            "trust": 0.015203516562353503,
+            "fear": 0.008938549511971827,
+            "negative": 0.11750969998607753,
+            "anger": 0.006777000012394274,
+            "anticipation": 0.0067682471388993285,
+            "sadness": 0.0016455554553441094
+        },
+        "mafia_statement_count": 231,
+        "civilian_statement_count": 372
+    },
+    "deepseek": {
+        "as_mafia_avg_emotions": {
+            "positive": 0.1061528202802068,
+            "negative": 0.17735122923762156,
+            "fear": 0.0427505101011692,
+            "anticipation": 0.017076763291572355,
+            "anger": 0.007867005573427592,
+            "surprise": 0.004769185961846512,
+            "trust": 0.013581338441729346,
+            "sadness": 0.0028396679772826556,
+            "disgust": 0.0014198339886413282,
+            "joy": 0.0008340283569641369
+        },
+        "as_civilian_avg_emotions": {
+            "negative": 0.14938919406965212,
+            "positive": 0.09157483477154435,
+            "trust": 0.029717608860082186,
+            "fear": 0.060808302116749015,
+            "anger": 0.016892091986975773,
+            "anticipation": 0.01690969908651487,
+            "sadness": 0.003746273431533288,
+            "disgust": 0.0021135307593640926,
+            "surprise": 0.0036129315643204534,
+            "anticip": 0.0,
+            "joy": 0.0007716049382716049
+        },
+        "mafia_statement_count": 218,
+        "civilian_statement_count": 432
+    },
+    "gemini": {
+        "as_mafia_avg_emotions": {
+            "trust": 0.003307860262008734,
+            "positive": 0.12794974970243997,
+            "negative": 0.15689660495204105,
+            "anger": 0.015478863311568555,
+            "sadness": 0.007379687251921698,
+            "anticipation": 0.011296663759282224,
+            "surprise": 0.0027032647119983365,
+            "fear": 0.008182156806289868,
+            "disgust": 0.001241544652795616
+        },
+        "as_civilian_avg_emotions": {
+            "positive": 0.13401918779158845,
+            "negative": 0.13060693204274756,
+            "anticipation": 0.009371926037671197,
+            "fear": 0.010490641867602152,
+            "anger": 0.008465473250985124,
+            "trust": 0.010390131431016074,
+            "disgust": 0.0002900232018561485,
+            "surprise": 0.0007312100119524714,
+            "sadness": 0.00405201913322563,
+            "joy": 0.0003866976024748646
+        },
+        "mafia_statement_count": 229,
+        "civilian_statement_count": 431
+    },
+    "grok": {
+        "as_mafia_avg_emotions": {
+            "negative": 0.17125075620307045,
+            "positive": 0.11016251089460556,
+            "fear": 0.01202652048743744,
+            "anger": 0.00734395547172709,
+            "anticipation": 0.005003602458147912,
+            "trust": 0.006414939912963628
+        },
+        "as_civilian_avg_emotions": {
+            "positive": 0.13241669021240213,
+            "negative": 0.1212946653647107,
+            "sadness": 0.0003625290023201856,
+            "trust": 0.005528034317378223,
+            "anger": 0.005939966665782626,
+            "fear": 0.008184538423273312,
+            "anticipation": 0.0059353382877767435
+        },
+        "mafia_statement_count": 220,
+        "civilian_statement_count": 431
+    }
+}

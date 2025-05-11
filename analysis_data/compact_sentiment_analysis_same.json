@@ -1,0 +1,92 @@
+{
+    "grok": {
+        "as_civilian": {
+            "positive_count": 3,
+            "neutral_count": 1,
+            "negative_count": 569,
+            "positive_avg_score": 0.4429576595624288,
+            "neutral_avg_score": 0.48152413964271545,
+            "negative_avg_score": 0.7994858510464902
+        },
+        "as_mafia": {
+            "positive_count": 1,
+            "neutral_count": 0,
+            "negative_count": 306,
+            "positive_avg_score": 0.48816967010498047,
+            "neutral_avg_score": 0,
+            "negative_avg_score": 0.8232788270205454
+        }
+    },
+    "deepseek": {
+        "as_civilian": {
+            "positive_count": 0,
+            "neutral_count": 0,
+            "negative_count": 271,
+            "positive_avg_score": 0,
+            "neutral_avg_score": 0,
+            "negative_avg_score": 0.7624783563217994
+        },
+        "as_mafia": {
+            "positive_count": 3,
+            "neutral_count": 0,
+            "negative_count": 145,
+            "positive_avg_score": 0.5258994797865549,
+            "neutral_avg_score": 0,
+            "negative_avg_score": 0.7831571868781386
+        }
+    },
+    "claude": {
+        "as_civilian": {
+            "positive_count": 11,
+            "neutral_count": 4,
+            "negative_count": 294,
+            "positive_avg_score": 0.5080576782876794,
+            "neutral_avg_score": 0.47190936654806137,
+            "negative_avg_score": 0.7090100444295779
+        },
+        "as_mafia": {
+            "positive_count": 1,
+            "neutral_count": 0,
+            "negative_count": 159,
+            "positive_avg_score": 0.431498646736145,
+            "neutral_avg_score": 0,
+            "negative_avg_score": 0.7644574730276311
+        }
+    },
+    "gemini": {
+        "as_civilian": {
+            "positive_count": 18,
+            "neutral_count": 8,
+            "negative_count": 510,
+            "positive_avg_score": 0.526421974102656,
+            "neutral_avg_score": 0.4242028445005417,
+            "negative_avg_score": 0.7179030026290931
+        },
+        "as_mafia": {
+            "positive_count": 13,
+            "neutral_count": 0,
+            "negative_count": 281,
+            "positive_avg_score": 0.5030330052742591,
+            "neutral_avg_score": 0,
+            "negative_avg_score": 0.739188091186442
+        }
+    },
+    "openai": {
+        "as_civilian": {
+            "positive_count": 4,
+            "neutral_count": 3,
+            "negative_count": 551,
+            "positive_avg_score": 0.4263046756386757,
+            "neutral_avg_score": 0.44544197122255963,
+            "negative_avg_score": 0.7096541907956077
+        },
+        "as_mafia": {
+            "positive_count": 2,
+            "neutral_count": 2,
+            "negative_count": 307,
+            "positive_avg_score": 0.4886837899684906,
+            "neutral_avg_score": 0.39932920038700104,
+            "negative_avg_score": 0.7043113364847164
+        }
+    }
+}

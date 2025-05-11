@@ -1,0 +1,37 @@
+{
+    "deepseek": {
+        "civilian_correct_votes": 212,
+        "civilian_wrong_votes": 105,
+        "civilian_no_one": 83,
+        "got_civilian_votes_as_mafia": 155,
+        "alive_civilian_voting_opportunities": 987
+    },
+    "gemini": {
+        "civilian_correct_votes": 210,
+        "civilian_wrong_votes": 85,
+        "civilian_no_one": 112,
+        "got_civilian_votes_as_mafia": 120,
+        "alive_civilian_voting_opportunities": 1005
+    },
+    "openai": {
+        "civilian_correct_votes": 111,
+        "civilian_wrong_votes": 113,
+        "civilian_no_one": 145,
+        "got_civilian_votes_as_mafia": 275,
+        "alive_civilian_voting_opportunities": 923
+    },
+    "grok": {
+        "civilian_correct_votes": 183,
+        "civilian_wrong_votes": 118,
+        "civilian_no_one": 90,
+        "got_civilian_votes_as_mafia": 164,
+        "alive_civilian_voting_opportunities": 991
+    },
+    "claude": {
+        "civilian_correct_votes": 147,
+        "civilian_wrong_votes": 98,
+        "civilian_no_one": 91,
+        "got_civilian_votes_as_mafia": 149,
+        "alive_civilian_voting_opportunities": 1025
+    }
+}

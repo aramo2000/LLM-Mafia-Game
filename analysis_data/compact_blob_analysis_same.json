@@ -1,0 +1,52 @@
+{
+    "gemini": {
+        "as_civilian": {
+            "count": 536,
+            "blob": 0.057557727675160535
+        },
+        "as_mafia": {
+            "count": 294,
+            "blob": 0.001818553334001184
+        }
+    },
+    "claude": {
+        "as_civilian": {
+            "count": 309,
+            "blob": 0.09829507023814703
+        },
+        "as_mafia": {
+            "count": 160,
+            "blob": 0.05161395084261523
+        }
+    },
+    "grok": {
+        "as_civilian": {
+            "count": 573,
+            "blob": 0.10359479130779932
+        },
+        "as_mafia": {
+            "count": 307,
+            "blob": 0.09871457820260558
+        }
+    },
+    "deepseek": {
+        "as_civilian": {
+            "count": 271,
+            "blob": 0.05857547492141591
+        },
+        "as_mafia": {
+            "count": 148,
+            "blob": 0.07242197554697556
+        }
+    },
+    "openai": {
+        "as_civilian": {
+            "count": 558,
+            "blob": 0.0996086309908634
+        },
+        "as_mafia": {
+            "count": 311,
+            "blob": 0.11650748550093976
+        }
+    }
+}

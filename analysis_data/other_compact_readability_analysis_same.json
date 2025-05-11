@@ -1,0 +1,62 @@
+{
+    "gemini": {
+        "as_civilian": {
+            "count": 536,
+            "avg_fog": 12.54177238805971,
+            "avg_smog": 12.812313432835815
+        },
+        "as_mafia": {
+            "count": 294,
+            "avg_fog": 12.206802721088438,
+            "avg_smog": 12.527891156462568
+        }
+    },
+    "claude": {
+        "as_civilian": {
+            "count": 309,
+            "avg_fog": 17.98456310679613,
+            "avg_smog": 16.93754045307441
+        },
+        "as_mafia": {
+            "count": 160,
+            "avg_fog": 18.262687500000016,
+            "avg_smog": 16.979375000000005
+        }
+    },
+    "grok": {
+        "as_civilian": {
+            "count": 573,
+            "avg_fog": 16.634904013961595,
+            "avg_smog": 15.150785340314163
+        },
+        "as_mafia": {
+            "count": 307,
+            "avg_fog": 15.799576547231272,
+            "avg_smog": 14.402931596091198
+        }
+    },
+    "deepseek": {
+        "as_civilian": {
+            "count": 271,
+            "avg_fog": 14.474132841328418,
+            "avg_smog": 13.373431734317322
+        },
+        "as_mafia": {
+            "count": 148,
+            "avg_fog": 14.37574324324325,
+            "avg_smog": 12.53648648648649
+        }
+    },
+    "openai": {
+        "as_civilian": {
+            "count": 558,
+            "avg_fog": 10.778261648745517,
+            "avg_smog": 10.711648745519682
+        },
+        "as_mafia": {
+            "count": 311,
+            "avg_fog": 10.864147909967848,
+            "avg_smog": 10.295176848874586
+        }
+    }
+}

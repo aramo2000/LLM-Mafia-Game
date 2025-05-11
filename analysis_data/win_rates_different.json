@@ -1,0 +1,131 @@
+{
+    "llm_role_counts": {
+        "openai": {
+            "mafia": 60,
+            "don": 30,
+            "detective": 30,
+            "civilian": 180
+        },
+        "deepseek": {
+            "mafia": 60,
+            "don": 30,
+            "detective": 30,
+            "civilian": 180
+        },
+        "claude": {
+            "mafia": 60,
+            "don": 30,
+            "detective": 30,
+            "civilian": 180
+        },
+        "gemini": {
+            "mafia": 60,
+            "don": 30,
+            "detective": 30,
+            "civilian": 180
+        },
+        "grok": {
+            "mafia": 60,
+            "don": 30,
+            "detective": 30,
+            "civilian": 180
+        }
+    },
+    "win_counts": {
+        "mafia_wins": 104,
+        "civilian_wins": 46
+    },
+    "role_win_counts": {
+        "openai": {
+            "mafia": 32,
+            "don": 15,
+            "detective": 9,
+            "civilian": 40
+        },
+        "deepseek": {
+            "mafia": 43,
+            "don": 25,
+            "detective": 8,
+            "civilian": 62
+        },
+        "claude": {
+            "mafia": 45,
+            "don": 19,
+            "detective": 13,
+            "civilian": 53
+        },
+        "gemini": {
+            "mafia": 45,
+            "don": 24,
+            "detective": 7,
+            "civilian": 64
+        },
+        "grok": {
+            "mafia": 43,
+            "don": 21,
+            "detective": 9,
+            "civilian": 57
+        }
+    },
+    "role_wins": {
+        "openai": 96,
+        "deepseek": 138,
+        "claude": 130,
+        "gemini": 140,
+        "grok": 130
+    },
+    "llm_role_combinations_wins": {
+        "openai": {
+            "mafia_don": 47,
+            "civilian_detective": 49
+        },
+        "deepseek": {
+            "mafia_don": 68,
+            "civilian_detective": 70
+        },
+        "claude": {
+            "mafia_don": 64,
+            "civilian_detective": 66
+        },
+        "gemini": {
+            "mafia_don": 69,
+            "civilian_detective": 71
+        },
+        "grok": {
+            "mafia_don": 64,
+            "civilian_detective": 66
+        }
+    },
+    "llm_role_win_ratios": {
+        "openai": {
+            "mafia": 0.5333333333333333,
+            "don": 0.5,
+            "detective": 0.3,
+            "civilian": 0.2222222222222222
+        },
+        "deepseek": {
+            "mafia": 0.7166666666666667,
+            "don": 0.8333333333333334,
+            "detective": 0.26666666666666666,
+            "civilian": 0.34444444444444444
+        },
+        "claude": {
+            "mafia": 0.75,
+            "don": 0.6333333333333333,
+            "detective": 0.43333333333333335,
+            "civilian": 0.29444444444444445
+        },
+        "gemini": {
+            "mafia": 0.75,
+            "don": 0.8,
+            "detective": 0.23333333333333334,
+            "civilian": 0.35555555555555557
+        },
+        "grok": {
+            "mafia": 0.7166666666666667,
+            "don": 0.7,
+            "detective": 0.3,
+            "civilian": 0.31666666666666665
+        }
+    }
+}

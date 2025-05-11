@@ -1,0 +1,32 @@
+{
+    "gemini": {
+        "avg_mafia_response_time": 9.05,
+        "avg_civilian_response_time": 9.16,
+        "num_mafia_statements": 294,
+        "num_civilian_statements": 536
+    },
+    "grok": {
+        "avg_mafia_response_time": 7.69,
+        "avg_civilian_response_time": 8.05,
+        "num_mafia_statements": 307,
+        "num_civilian_statements": 573
+    },
+    "openai": {
+        "avg_mafia_response_time": 10.07,
+        "avg_civilian_response_time": 9.87,
+        "num_mafia_statements": 311,
+        "num_civilian_statements": 558
+    },
+    "deepseek": {
+        "avg_mafia_response_time": 99.69,
+        "avg_civilian_response_time": 99.03,
+        "num_mafia_statements": 148,
+        "num_civilian_statements": 271
+    },
+    "claude": {
+        "avg_mafia_response_time": 12.67,
+        "avg_civilian_response_time": 12.83,
+        "num_mafia_statements": 160,
+        "num_civilian_statements": 309
+    }
+}

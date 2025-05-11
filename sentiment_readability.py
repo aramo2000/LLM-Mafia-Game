@@ -1,19 +1,41 @@
-from typing import List, Dict
 from transformers import pipeline
 import textstat
 import config
-import os
-import json
+from textblob import TextBlob
+from nltk.sentiment import SentimentIntensityAnalyzer
+
+# import nltk
+# nltk.download('vader_lexicon')
+
 
 def sentiment_analyzer(text: str) -> list:
     sa = pipeline(task='sentiment-analysis', model=config.HUGGINGFACE_MODEL)
     return sa(text)
 
 
+def sentiment_textblob(text: str) -> int:
+    return TextBlob(text).sentiment.polarity
+
+
+def sentiment_vader_lexicon(text: str) -> int:
+    sia = SentimentIntensityAnalyzer()
+    return sia.polarity_scores(text)['compound']
+
+
 def readability_metrics(text: str) -> list:
     reading_ease = textstat.flesch_reading_ease(text)
     grade_level = textstat.flesch_kincaid_grade(text)
     return [reading_ease, grade_level]
+
+
+def readability_metrics_other(text: str) -> list:
+    gunning_fog = textstat.gunning_fog(text)
+    smog_index = textstat.smog_index(text)
+    return [gunning_fog, smog_index]
+
+
+def nrclex(text: str):
+    return NRCLex(text).top_emotions
 
 
 def sentiment_analysis_dict(folder_name: str, json_name: str) -> dict:
@@ -145,3 +167,236 @@ def compact_readability_analysis_results(readability_data: dict, json_name: str)
     with open(json_name, "w") as f:
         json.dump(compact_data, f, indent=4)
     return compact_data
+
+
+
+def other_readability_analysis_dict(folder_name: str, json_name: str) -> dict:
+    json_paths = [os.path.join(folder_name, fname) for fname in os.listdir(folder_name) if fname.endswith('.json')]
+
+    all_games = []
+    for path in json_paths:
+        with open(path, 'r') as file:
+            all_games.extend(json.load(file))
+
+    llms_used = list({player['llm_name'] for game in all_games for player in game['game_details']['players']})
+    results = {llm_name: {"as_civilian": [], "as_mafia": []} for llm_name in llms_used}
+
+    for game in all_games:
+        for game_event in game['game_details']['game_log']:
+            if "events" in game_event:  # Only consider day logs with statements
+                for event in game_event["events"]:
+                    if "statement" in event:
+                        player_id = event["player_id"]
+                        statement = event["statement"]
+
+                        for player_info in game['game_details']['players']:
+                            if player_info['player_id'] == player_id:
+                                role = player_info['role']
+                                llm_name = player_info['llm_name']
+                                readability = readability_metrics_other(statement)
+
+                                if role in {"mafia", "don"}:
+                                    results[llm_name]["as_mafia"].append(readability)
+                                elif role in {"civilian", "detective"}:
+                                    results[llm_name]["as_civilian"].append(readability)
+                                break
+        with open(json_name, "w") as f:
+            json.dump(results, f, indent=4)
+    return results
+
+
+def other_compact_readability_analysis_results(readability_data: dict, json_name: str) -> dict:
+    compact_data = {}
+    for llm_name, roles_data in readability_data.items():
+        compact_data[llm_name] = {}
+        for role, metrics in roles_data.items():
+            count = len(metrics)
+            avg_fog = sum([metric[0] for metric in metrics]) / count if count > 0 else 0
+            avg_smog = sum([metric[1] for metric in metrics]) / count if count > 0 else 0
+            compact_data[llm_name][role] = {
+                "count": count,
+                "avg_fog": avg_fog,
+                "avg_smog": avg_smog
+            }
+    with open(json_name, "w") as f:
+        json.dump(compact_data, f, indent=4)
+    return compact_data
+
+
+def textblob_analysis_dict(folder_name: str, json_name: str) -> dict:
+    json_paths = [os.path.join(folder_name, fname) for fname in os.listdir(folder_name) if fname.endswith('.json')]
+
+    all_games = []
+    for path in json_paths:
+        with open(path, 'r') as file:
+            all_games.extend(json.load(file))
+
+    llms_used = list({player['llm_name'] for game in all_games for player in game['game_details']['players']})
+    results = {llm_name: {"as_civilian": [], "as_mafia": []} for llm_name in llms_used}
+
+    for game in all_games:
+        for game_event in game['game_details']['game_log']:
+            if "events" in game_event:  # Only consider day logs with statements
+                for event in game_event["events"]:
+                    if "statement" in event:
+                        player_id = event["player_id"]
+                        statement = event["statement"]
+
+                        for player_info in game['game_details']['players']:
+                            if player_info['player_id'] == player_id:
+                                role = player_info['role']
+                                llm_name = player_info['llm_name']
+                                blob = [sentiment_textblob(statement)]
+
+                                if role in {"mafia", "don"}:
+                                    results[llm_name]["as_mafia"].append(blob)
+                                elif role in {"civilian", "detective"}:
+                                    results[llm_name]["as_civilian"].append(blob)
+                                break
+        with open(json_name, "w") as f:
+            json.dump(results, f, indent=4)
+    return results
+
+
+def compact_textblob_analysis_dict(readability_data: dict, json_name: str) -> dict:
+    compact_data = {}
+    for llm_name, roles_data in readability_data.items():
+        compact_data[llm_name] = {}
+        for role, metrics in roles_data.items():
+            count = len(metrics)
+            blob = sum([metric[0] for metric in metrics]) / count if count > 0 else 0
+            compact_data[llm_name][role] = {
+                "count": count,
+                "blob": blob
+            }
+    with open(json_name, "w") as f:
+        json.dump(compact_data, f, indent=4)
+    return compact_data
+
+
+def vader_lexicon_analysis_dict(folder_name: str, json_name: str) -> dict:
+    json_paths = [os.path.join(folder_name, fname) for fname in os.listdir(folder_name) if fname.endswith('.json')]
+
+    all_games = []
+    for path in json_paths:
+        with open(path, 'r') as file:
+            all_games.extend(json.load(file))
+
+    llms_used = list({player['llm_name'] for game in all_games for player in game['game_details']['players']})
+    results = {llm_name: {"as_civilian": [], "as_mafia": []} for llm_name in llms_used}
+
+    for game in all_games:
+        for game_event in game['game_details']['game_log']:
+            if "events" in game_event:  # Only consider day logs with statements
+                for event in game_event["events"]:
+                    if "statement" in event:
+                        player_id = event["player_id"]
+                        statement = event["statement"]
+
+                        for player_info in game['game_details']['players']:
+                            if player_info['player_id'] == player_id:
+                                role = player_info['role']
+                                llm_name = player_info['llm_name']
+                                vader = [sentiment_vader_lexicon(statement)]
+
+                                if role in {"mafia", "don"}:
+                                    results[llm_name]["as_mafia"].append(vader)
+                                elif role in {"civilian", "detective"}:
+                                    results[llm_name]["as_civilian"].append(vader)
+                                break
+        with open(json_name, "w") as f:
+            json.dump(results, f, indent=4)
+    return results
+
+
+def compact_vader_lexicon_analysis_dict(readability_data: dict, json_name: str) -> dict:
+    compact_data = {}
+    for llm_name, roles_data in readability_data.items():
+        compact_data[llm_name] = {}
+        for role, metrics in roles_data.items():
+            count = len(metrics)
+            vader = sum([metric[0] for metric in metrics]) / count if count > 0 else 0
+            compact_data[llm_name][role] = {
+                "count": count,
+                "vader": vader
+            }
+    with open(json_name, "w") as f:
+        json.dump(compact_data, f, indent=4)
+    return compact_data
+
+
+import os
+import json
+from typing import List, Dict
+from nrclex import NRCLex  # Ensure it's installed
+
+def nrclex(text: str):
+    return NRCLex(text).top_emotions
+
+def nrc_emotion_aggregation_dict(folder_name: str, json_name: str) -> dict:
+    json_paths = [os.path.join(folder_name, fname) for fname in os.listdir(folder_name) if fname.endswith('.json')]
+    all_games = []
+    for path in json_paths:
+        with open(path, 'r') as file:
+            all_games.extend(json.load(file))
+    llms_used = list({player['llm_name'] for game in all_games for player in game['game_details']['players']})
+    results = {
+        llm: {
+            "as_civilian": {},
+            "as_mafia": {},
+            "civilian_statement_count": 0,
+            "mafia_statement_count": 0
+        }
+        for llm in llms_used
+    }
+    for game in all_games:
+        for game_event in game['game_details']['game_log']:
+            if "events" in game_event:
+                for event in game_event["events"]:
+                    if "statement" in event:
+                        player_id = event["player_id"]
+                        statement = event["statement"]
+
+                        for player_info in game['game_details']['players']:
+                            if player_info['player_id'] == player_id:
+                                role = player_info['role']
+                                llm_name = player_info['llm_name']
+                                emotion_list = nrclex(statement)
+
+                                if role in {"mafia", "don"}:
+                                    role_key = "as_mafia"
+                                    results[llm_name]["mafia_statement_count"] += 1
+                                elif role in {"civilian", "detective"}:
+                                    role_key = "as_civilian"
+                                    results[llm_name]["civilian_statement_count"] += 1
+                                else:
+                                    break  # skip unknown roles
+
+                                for emotion, score in emotion_list:
+                                    if emotion in results[llm_name][role_key]:
+                                        results[llm_name][role_key][emotion] += score
+                                    else:
+                                        results[llm_name][role_key][emotion] = score
+                                break
+    final_results = {}
+    for llm in results:
+        mafia_count = results[llm]["mafia_statement_count"]
+        civ_count = results[llm]["civilian_statement_count"]
+
+        mafia_emotions = {
+            emotion: score / mafia_count for emotion, score in results[llm]["as_mafia"].items()
+        } if mafia_count > 0 else {}
+
+        civ_emotions = {
+            emotion: score / civ_count for emotion, score in results[llm]["as_civilian"].items()
+        } if civ_count > 0 else {}
+        final_results[llm] = {
+            "as_mafia_avg_emotions": mafia_emotions,
+            "as_civilian_avg_emotions": civ_emotions,
+            "mafia_statement_count": mafia_count,
+            "civilian_statement_count": civ_count
+        }
+    with open(json_name, "w") as f:
+        json.dump(final_results, f, indent=4)
+    return final_results
+
