@@ -1,62 +1,82 @@
 {
+    "deepseek": {
+        "as_civilian": {
+            "count": 271,
+            "avg_reading_ease": 25.873136531365304,
+            "std_reading_ease": 12.873529723162253,
+            "avg_grade_level": 12.849446494464937,
+            "std_grade_level": 1.9414746371176212
+        },
+        "as_mafia": {
+            "count": 148,
+            "avg_reading_ease": 31.896959459459453,
+            "std_reading_ease": 14.269617629455329,
+            "avg_grade_level": 11.795270270270267,
+            "std_grade_level": 2.0526848010455634
+        }
+    },
     "grok": {
         "as_civilian": {
             "count": 573,
             "avg_reading_ease": 37.15856893542758,
-            "avg_grade_level": 14.359860383944158
+            "std_reading_ease": 8.387964907600127,
+            "avg_grade_level": 14.359860383944158,
+            "std_grade_level": 1.6318383755659696
         },
         "as_mafia": {
             "count": 307,
             "avg_reading_ease": 41.52788273615634,
-            "avg_grade_level": 13.60195439739414
-        }
-    },
-    "gemini": {
-        "as_civilian": {
-            "count": 536,
-            "avg_reading_ease": 49.76197761194027,
-            "avg_grade_level": 10.821082089552247
-        },
-        "as_mafia": {
-            "count": 294,
-            "avg_reading_ease": 52.095918367346925,
-            "avg_grade_level": 10.407482993197283
+            "std_reading_ease": 9.19078248885513,
+            "avg_grade_level": 13.60195439739414,
+            "std_grade_level": 1.7793466776378335
         }
     },
     "openai": {
         "as_civilian": {
             "count": 558,
             "avg_reading_ease": 59.14419354838709,
-            "avg_grade_level": 8.782258064516132
+            "std_reading_ease": 9.159897530952655,
+            "avg_grade_level": 8.782258064516132,
+            "std_grade_level": 1.5009956927747607
         },
         "as_mafia": {
             "count": 311,
             "avg_reading_ease": 59.45421221864952,
-            "avg_grade_level": 8.719935691318323
+            "std_reading_ease": 10.409193793266878,
+            "avg_grade_level": 8.719935691318323,
+            "std_grade_level": 1.7783250534846133
         }
     },
-    "deepseek": {
+    "gemini": {
         "as_civilian": {
-            "count": 271,
-            "avg_reading_ease": 25.873136531365304,
-            "avg_grade_level": 12.849446494464937
+            "count": 536,
+            "avg_reading_ease": 49.76197761194027,
+            "std_reading_ease": 9.502828846282608,
+            "avg_grade_level": 10.821082089552247,
+            "std_grade_level": 1.798198357124838
         },
         "as_mafia": {
-            "count": 148,
-            "avg_reading_ease": 31.896959459459453,
-            "avg_grade_level": 11.795270270270267
+            "count": 294,
+            "avg_reading_ease": 52.095918367346925,
+            "std_reading_ease": 10.415748987443129,
+            "avg_grade_level": 10.407482993197283,
+            "std_grade_level": 1.9779531750040031
         }
     },
     "claude": {
         "as_civilian": {
             "count": 309,
             "avg_reading_ease": 24.073074433656952,
-            "avg_grade_level": 16.440453074433638
+            "std_reading_ease": 10.123088849498025,
+            "avg_grade_level": 16.440453074433638,
+            "std_grade_level": 2.1271012045309026
         },
         "as_mafia": {
             "count": 160,
             "avg_reading_ease": 23.900499999999987,
-            "avg_grade_level": 16.107499999999998
+            "std_reading_ease": 12.782889546469246,
+            "avg_grade_level": 16.107499999999998,
+            "std_grade_level": 2.646905158527406
         }
     }
 }

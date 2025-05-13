@@ -46,44 +46,44 @@ from sentiment_readability import nrc_emotion_aggregation_dict
 # compact_sent_analysis_results(sent_analysis_dict, output_file)
 
 
-# # generates readability analysis results for different llm types
-# folder_name = "generated_data_different"
-# output_file = "readability_analysis_different.json"
-# readability_analysis_dic = readability_analysis_dict(folder_name, output_file)
-# output_file = "compact_readability_analysis_different.json"
-# compact_readability_analysis_results(readability_analysis_dic, output_file)
+# generates readability analysis results for different llm types
+folder_name = "generated_data_different"
+output_file = "sentiment_readability_analysis_data/readability_analysis_different.json"
+readability_analysis_dic = readability_analysis_dict(folder_name, output_file)
+output_file = "understandable_sentiment_readability/compact_readability_analysis_different.json"
+compact_readability_analysis_results(readability_analysis_dic, output_file)
 
-# # generates readability analysis results for same llm types
-# folder_name = "generated_data_same"
-# output_file = "readability_analysis_same.json"
-# readability_analysis_dic = readability_analysis_dict(folder_name, output_file)
-# output_file = "compact_readability_analysis_same.json"
-# compact_readability_analysis_results(readability_analysis_dic, output_file)
+# generates readability analysis results for same llm types
+folder_name = "generated_data_same"
+output_file = "sentiment_readability_analysis_data/readability_analysis_same.json"
+readability_analysis_dic = readability_analysis_dict(folder_name, output_file)
+output_file = "understandable_sentiment_readability/compact_readability_analysis_same.json"
+compact_readability_analysis_results(readability_analysis_dic, output_file)
 
 
 # # generates time analysis results for different llm types
 # folder_name = "generated_data_different"
-# output_file = "time_analysis_different.json"
+# output_file = "analysis_data/time_analysis_different.json"
 # mafia_vs_civilian_response_times(folder_name, output_file)
 
 # # generates time analysis results for same llm types
 # folder_name = "generated_data_same"
-# output_file = "time_analysis_same.json"
+# output_file = "analysis_data/time_analysis_same.json"
 # mafia_vs_civilian_response_times(folder_name, output_file)
 
 
 # # generates fog smog analysis results for different llm types
 # folder_name = "generated_data_different"
-# output_file = "other_readability_analysis_different.json"
+# output_file = "fog_smog_readability_analysis_different.json"
 # readability_analysis_dic = other_readability_analysis_dict(folder_name, output_file)
-# output_file = "other_compact_readability_analysis_different.json"
+# output_file = "compact_fog_smog_readability_analysis_different.json"
 # other_compact_readability_analysis_results(readability_analysis_dic, output_file)
 
 # # generates fog smog analysis results for same llm types
 # folder_name = "generated_data_same"
-# output_file = "other_readability_analysis_same.json"
+# output_file = "fog_smog_other_readability_analysis_same.json"
 # readability_analysis_dic = other_readability_analysis_dict(folder_name, output_file)
-# output_file = "other_compact_readability_analysis_same.json"
+# output_file = "compact_fog_smog_readability_analysis_same.json"
 # other_compact_readability_analysis_results(readability_analysis_dic, output_file)
 
 

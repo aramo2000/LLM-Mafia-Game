@@ -1,7 +1,7 @@
 import os
 import json
 from typing import Dict
-from statistics import mean
+from statistics import mean, stdev
 
 
 def mafia_vs_civilian_response_times(folder_name: str, output_json: str) -> Dict:
@@ -24,16 +24,20 @@ def mafia_vs_civilian_response_times(folder_name: str, output_json: str) -> Dict
                         llm_durations[llm]['mafia'].extend(durations)
                     elif role in ['civilian', 'detective']:
                         llm_durations[llm]['civilian'].extend(durations)
+
     result = {}
     for llm, role_durations in llm_durations.items():
         mafia_times = role_durations['mafia']
         civilian_times = role_durations['civilian']
         result[llm] = {
-            "avg_mafia_response_time": round(mean(mafia_times), 2) if mafia_times else 0,
-            "avg_civilian_response_time": round(mean(civilian_times), 2) if civilian_times else 0,
+            "avg_mafia_response_time": round(mean(mafia_times), 3) if mafia_times else 0,
+            "std_mafia_response_time": round(stdev(mafia_times), 3) if len(mafia_times) > 1 else 0,
             "num_mafia_statements": len(mafia_times),
+            "avg_civilian_response_time": round(mean(civilian_times), 3) if civilian_times else 0,
+            "std_civilian_response_time": round(stdev(civilian_times), 3) if len(civilian_times) > 1 else 0,
             "num_civilian_statements": len(civilian_times)
         }
+
     with open(output_json, 'w') as f:
         json.dump(result, f, indent=4)
     return result

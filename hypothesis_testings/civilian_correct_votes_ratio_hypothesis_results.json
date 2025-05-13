@@ -1,0 +1,143 @@
+{
+    "same_vs_diff_comparisons": {
+        "openai": {
+            "larger": {
+                "z-statistic": 2.9691962135393153,
+                "p-value": 0.0014928993782744573
+            }
+        },
+        "deepseek": {
+            "smaller": {
+                "z-statistic": -2.966123543331108,
+                "p-value": 0.0015078965884894934
+            }
+        },
+        "claude": {
+            "larger": {
+                "z-statistic": 2.7960623418442467,
+                "p-value": 0.0025864710473025724
+            }
+        },
+        "gemini": {
+            "smaller": {
+                "z-statistic": -3.296298986145321,
+                "p-value": 0.0004898384697601629
+            }
+        },
+        "grok": {
+            "larger": {
+                "z-statistic": 2.6243879951299944,
+                "p-value": 0.004340241882148216
+            }
+        }
+    },
+    "different_model_comparisons": {
+        "openai vs deepseek": {
+            "smaller": {
+                "z-statistic": -6.433208432772524,
+                "p-value": 6.246906762107268e-11
+            }
+        },
+        "openai vs claude": {
+            "smaller": {
+                "z-statistic": -3.763058342074812,
+                "p-value": 8.39240123184992e-05
+            }
+        },
+        "openai vs gemini": {
+            "smaller": {
+                "z-statistic": -6.077703916432041,
+                "p-value": 6.095779772034471e-10
+            }
+        },
+        "openai vs grok": {
+            "smaller": {
+                "z-statistic": -4.730683948397363,
+                "p-value": 1.118823310834934e-06
+            }
+        },
+        "deepseek vs openai": {},
+        "deepseek vs claude": {},
+        "deepseek vs gemini": {},
+        "deepseek vs grok": {},
+        "claude vs openai": {},
+        "claude vs deepseek": {
+            "smaller": {
+                "z-statistic": -2.5007044957291376,
+                "p-value": 0.006197327582009394
+            }
+        },
+        "claude vs gemini": {
+            "smaller": {
+                "z-statistic": -2.13078680165295,
+                "p-value": 0.016553355084392582
+            }
+        },
+        "claude vs grok": {},
+        "gemini vs openai": {},
+        "gemini vs deepseek": {},
+        "gemini vs claude": {},
+        "gemini vs grok": {},
+        "grok vs openai": {},
+        "grok vs deepseek": {
+            "smaller": {
+                "z-statistic": -1.7427581888728019,
+                "p-value": 0.04068793129980189
+            }
+        },
+        "grok vs claude": {},
+        "grok vs gemini": {}
+    },
+    "same_model_comparisons": {
+        "openai vs deepseek": {},
+        "openai vs claude": {
+            "smaller": {
+                "z-statistic": -4.046622354955875,
+                "p-value": 2.5980984851404112e-05
+            }
+        },
+        "openai vs gemini": {},
+        "openai vs grok": {
+            "smaller": {
+                "z-statistic": -4.874099578830865,
+                "p-value": 5.465292386300326e-07
+            }
+        },
+        "deepseek vs openai": {},
+        "deepseek vs claude": {
+            "smaller": {
+                "z-statistic": -3.2271171934325285,
+                "p-value": 0.0006252211698299935
+            }
+        },
+        "deepseek vs gemini": {},
+        "deepseek vs grok": {
+            "smaller": {
+                "z-statistic": -3.810541639945066,
+                "p-value": 6.933132655173993e-05
+            }
+        },
+        "claude vs openai": {},
+        "claude vs deepseek": {},
+        "claude vs gemini": {},
+        "claude vs grok": {},
+        "gemini vs openai": {},
+        "gemini vs deepseek": {},
+        "gemini vs claude": {
+            "smaller": {
+                "z-statistic": -3.88911818531351,
+                "p-value": 5.030455880697268e-05
+            }
+        },
+        "gemini vs grok": {
+            "smaller": {
+                "z-statistic": -4.6490937659452705,
+                "p-value": 1.6669831612935584e-06
+            }
+        },
+        "grok vs openai": {},
+        "grok vs deepseek": {},
+        "grok vs claude": {},
+        "grok vs gemini": {}
+    }
+}

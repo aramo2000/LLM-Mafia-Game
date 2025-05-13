@@ -1,0 +1,92 @@
+{
+    "smaller_comparisons": {
+        "Mafia": {
+            "openai vs deepseek": {
+                "z-statistic": -2.0741798914805396,
+                "p-value": 0.019031303516222457
+            },
+            "openai vs claude": {
+                "z-statistic": -2.4748813613878,
+                "p-value": 0.0066640220768638
+            },
+            "openai vs gemini": {
+                "z-statistic": -2.4748813613878,
+                "p-value": 0.0066640220768638
+            },
+            "openai vs grok": {
+                "z-statistic": -2.0741798914805396,
+                "p-value": 0.019031303516222457
+            }
+        },
+        "Civilian": {
+            "openai vs deepseek": {
+                "z-statistic": -2.573143414476494,
+                "p-value": 0.005038971874913071
+            },
+            "openai vs claude": {
+                "z-statistic": -1.5652996845886724,
+                "p-value": 0.05875632853525774
+            },
+            "openai vs gemini": {
+                "z-statistic": -2.790781528257191,
+                "p-value": 0.0026290475180787234
+            },
+            "openai vs grok": {
+                "z-statistic": -2.019465463653271,
+                "p-value": 0.021719431705644998
+            },
+            "claude vs gemini": {
+                "z-statistic": -1.2377925597689259,
+                "p-value": 0.10789649396651912
+            }
+        },
+        "Don": {
+            "openai vs deepseek": {
+                "z-statistic": -2.738612787525831,
+                "p-value": 0.0030849496602720753
+            },
+            "openai vs claude": {
+                "z-statistic": -1.042100211437812,
+                "p-value": 0.14868261028577473
+            },
+            "openai vs gemini": {
+                "z-statistic": -2.435993828823451,
+                "p-value": 0.007425468943682439
+            },
+            "openai vs grok": {
+                "z-statistic": -1.5811388300841893,
+                "p-value": 0.056923149003329045
+            },
+            "claude vs deepseek": {
+                "z-statistic": -1.751622624363427,
+                "p-value": 0.03991935982292627
+            },
+            "claude vs gemini": {
+                "z-statistic": -1.4324746364705132,
+                "p-value": 0.07600401590300498
+            },
+            "grok vs deepseek": {
+                "z-statistic": -1.2209353913347203,
+                "p-value": 0.11105524157124469
+            }
+        },
+        "Detective": {
+            "openai vs claude": {
+                "z-statistic": -1.07159943955364,
+                "p-value": 0.1419499925973271
+            },
+            "deepseek vs claude": {
+                "z-statistic": -1.3533299049019172,
+                "p-value": 0.08797512979825794
+            },
+            "gemini vs claude": {
+                "z-statistic": -1.6431676725154984,
+                "p-value": 0.05017412323114535
+            },
+            "grok vs claude": {
+                "z-statistic": -1.07159943955364,
+                "p-value": 0.1419499925973271
+            }
+        }
+    }
+}

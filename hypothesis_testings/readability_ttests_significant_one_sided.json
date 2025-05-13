@@ -1,0 +1,48 @@
+{
+    "different_model_readability_tests": {
+        "deepseek": {
+            "t-statistic": 5.7452,
+            "two-sided p-value": 0.0,
+            "p-value (mafia > civilian)": 1.0,
+            "p-value (civilian > mafia)": 0.0
+        },
+        "claude": {
+            "t-statistic": -2.3656,
+            "two-sided p-value": 0.0184,
+            "p-value (mafia > civilian)": 0.0092,
+            "p-value (civilian > mafia)": 0.9908
+        },
+        "gemini": {
+            "t-statistic": 4.8659,
+            "two-sided p-value": 0.0,
+            "p-value (mafia > civilian)": 1.0,
+            "p-value (civilian > mafia)": 0.0
+        },
+        "grok": {
+            "t-statistic": 5.4037,
+            "two-sided p-value": 0.0,
+            "p-value (mafia > civilian)": 1.0,
+            "p-value (civilian > mafia)": 0.0
+        }
+    },
+    "same_model_readability_tests": {
+        "deepseek": {
+            "t-statistic": 4.273,
+            "two-sided p-value": 0.0,
+            "p-value (mafia > civilian)": 1.0,
+            "p-value (civilian > mafia)": 0.0
+        },
+        "gemini": {
+            "t-statistic": 3.1835,
+            "two-sided p-value": 0.0015,
+            "p-value (mafia > civilian)": 0.9992,
+            "p-value (civilian > mafia)": 0.0008
+        },
+        "grok": {
+            "t-statistic": 6.9264,
+            "two-sided p-value": 0.0,
+            "p-value (mafia > civilian)": 1.0,
+            "p-value (civilian > mafia)": 0.0
+        }
+    }
+}

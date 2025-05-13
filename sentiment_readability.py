@@ -3,6 +3,7 @@ import textstat
 import config
 from textblob import TextBlob
 from nltk.sentiment import SentimentIntensityAnalyzer
+import statistics
 
 # import nltk
 # nltk.download('vader_lexicon')
@@ -157,17 +158,31 @@ def compact_readability_analysis_results(readability_data: dict, json_name: str)
         compact_data[llm_name] = {}
         for role, metrics in roles_data.items():
             count = len(metrics)
-            avg_reading_ease = sum([metric[0] for metric in metrics]) / count if count > 0 else 0
-            avg_grade_level = sum([metric[1] for metric in metrics]) / count if count > 0 else 0
+            if count > 0:
+                reading_eases = [metric[0] for metric in metrics]
+                grade_levels = [metric[1] for metric in metrics]
+
+                avg_reading_ease = sum(reading_eases) / count
+                avg_grade_level = sum(grade_levels) / count
+
+                std_reading_ease = statistics.stdev(reading_eases) if count > 1 else 0
+                std_grade_level = statistics.stdev(grade_levels) if count > 1 else 0
+            else:
+                avg_reading_ease = 0
+                avg_grade_level = 0
+                std_reading_ease = 0
+                std_grade_level = 0
+
             compact_data[llm_name][role] = {
                 "count": count,
                 "avg_reading_ease": avg_reading_ease,
-                "avg_grade_level": avg_grade_level
+                "std_reading_ease": std_reading_ease,
+                "avg_grade_level": avg_grade_level,
+                "std_grade_level": std_grade_level
             }
     with open(json_name, "w") as f:
         json.dump(compact_data, f, indent=4)
     return compact_data
-
 
 
 def other_readability_analysis_dict(folder_name: str, json_name: str) -> dict:
