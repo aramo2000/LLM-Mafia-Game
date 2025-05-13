@@ -2,13 +2,21 @@ import matplotlib.pyplot as plt
 import json
 import math
 
+llm_name_map = {
+    "openai": "OpenAI o4-mini",
+    "gemini": "Gemini 2.5 Flash",
+    "grok": "Grok-3 mini beta",
+    "claude": "Claude 3.7 Sonnet",
+    "deepseek": "DeepSeek Reasoner (R1)"
+}
+
 path = "analysis_data/"
 with open(path+"time_analysis_same.json") as f:
     same_time_data = json.load(f)
 with open(path+"time_analysis_different.json") as f:
     diff_time_data = json.load(f)
 
-ci_factor = 1.44  # 85% confidence interval
+ci_factor = 1.96  # 85% confidence interval
 bar_width = 0.35
 offset = 0.1
 
@@ -16,6 +24,7 @@ offset = 0.1
 def plot_response_times_with_ylim(data, title):
     ylim_max = 110
     llms = list(data.keys())
+    llms.sort()
     avg_mafia = [data[llm]["avg_mafia_response_time"] for llm in llms]
     avg_civilian = [data[llm]["avg_civilian_response_time"] for llm in llms]
     mafia_counts = [data[llm]["num_mafia_statements"] for llm in llms]
@@ -33,8 +42,8 @@ def plot_response_times_with_ylim(data, title):
 
     x = range(len(llms))
     plt.figure(figsize=(12, 6))
-    bars1 = plt.bar(x, avg_mafia, width=bar_width, label='Mafia Avg Time', color='red')
-    bars2 = plt.bar([i + bar_width for i in x], avg_civilian, width=bar_width, label='Civilian Avg Time', color='blue')
+    bars1 = plt.bar(x, avg_mafia, width=bar_width, label='Mafia+Don Avg Time', color='red')
+    bars2 = plt.bar([i + bar_width for i in x], avg_civilian, width=bar_width, label='Civilian+Detective Avg Time', color='blue')
 
     for i, (m, err) in enumerate(zip(avg_mafia, mafia_errors)):
         x_pos = i - offset
@@ -52,11 +61,11 @@ def plot_response_times_with_ylim(data, title):
         plt.text(x_pos + 0.05, lower, f'{lower:.2f}', ha='left', va='top', fontsize=7)
         plt.text(x_pos + 0.05, upper, f'{upper:.2f}', ha='left', va='bottom', fontsize=7)
 
-    plt.xlabel('LLMs')
+    # plt.xlabel('LLMs')
     plt.ylabel('Average Response Time (s)')
     plt.title(title)
     plt.ylim(0, ylim_max)
-    plt.xticks([i + bar_width / 2 for i in x], llms)
+    plt.xticks([i + bar_width / 2 for i in x], [llm_name_map[llm] for llm in llms])
     plt.legend()
     plt.tight_layout()
     plt.show()
