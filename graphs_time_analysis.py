@@ -71,6 +71,5 @@ def plot_response_times_with_ylim(data, title):
     plt.show()
 
 
-# Call with higher y-limit
 plot_response_times_with_ylim(same_time_data, "Response Times by Role (Same-Model Games) with 85% CI")
 plot_response_times_with_ylim(diff_time_data, "Response Times by Role (Different-Model Games) with 85% CI")
