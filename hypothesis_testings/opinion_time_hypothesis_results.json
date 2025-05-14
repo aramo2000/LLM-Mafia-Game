@@ -2,19 +2,15 @@
     "different_model_time_tests": {
         "openai": {
             "t-statistic": 2.9377,
-            "two-sided p-value": 0.0035,
             "p-value (mafia > civilian)": 0.9983,
-            "p-value (civilian > mafia)": 0.0017,
-            "significant (two-sided, p < 0.05)": true
+            "p-value (civilian > mafia)": 0.0017
         }
     },
     "same_model_time_tests": {
         "grok": {
             "t-statistic": -2.4291,
-            "two-sided p-value": 0.0154,
             "p-value (mafia > civilian)": 0.0077,
-            "p-value (civilian > mafia)": 0.9923,
-            "significant (two-sided, p < 0.05)": true
+            "p-value (civilian > mafia)": 0.9923
         }
     }
 }
