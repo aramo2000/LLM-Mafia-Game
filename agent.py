@@ -8,18 +8,18 @@ from utils import retry
 
 class Agent:
     def __init__(self, llm_name: str, player_name: str, player_role: str, mafia_player_indices: List[int], don_index: int = None):
-        self.llm_name = llm_name  # Store LLM name
+        self.llm_name = llm_name
         self.player_name = player_name
         self.role = player_role
-        self.status = "alive"  # Default status is alive
+        self.status = "alive"
         self.input_tokens_used = 0
         self.output_tokens_used = 0
         self.thinking_tokens_used = 0
         self.votes = []
         self.statements = []
         self.investigations = []
-        self.mafia_thinking = []  # To store the internal reasons for the mafia kill decisions
-        self.detective_thinking = []  # To store detective reasoning
+        self.mafia_thinking = []
+        self.detective_thinking = []
         self.mafia_kill_targets = []
         self.don_guesses = []
         self.opinion_speech_generation_durations = []
@@ -31,14 +31,12 @@ class Agent:
             self.mafia_players = []
             self.don = None
 
-
     def get_player_info(self):
-        # Return a dictionary with the player's information
         return {
             "player_id": self.player_name,
             "role": self.role,
             "status": self.status,
-            "llm_name": self.llm_name  # This ensures the LLM name is tracked
+            "llm_name": self.llm_name
         }
 
     @retry(retries=4, delay=10)
@@ -113,9 +111,7 @@ class Agent:
             self.input_tokens_used += llm_response.usage.prompt_tokens
             self.output_tokens_used += llm_response.usage.completion_tokens
             self.thinking_tokens_used += llm_response.usage.completion_tokens_details.reasoning_tokens
-
         return output_text
-
 
     def _build_system_prompt(self):
         rules = prompts_constants.SYSTEM_PROMPTS["rules"]
@@ -212,7 +208,6 @@ class Agent:
         voted_player = int(vote_choice.replace("player_", "").strip())
         return voted_player, reason
 
-
     def investigate(self, game_log: str, alive_players: list[int], current_night: int = 1) -> int:
         possible_targets = [p for p in alive_players if f"player_{p}" != self.player_name]
         system_prompt = self._build_system_prompt()
@@ -224,7 +219,6 @@ class Agent:
             f"You are {self.player_name}, do not investigate yourself as you know you are the detective."
         )
 
-        # Add reasoning for investigation decision
         if current_night > 1:
             user_prompt += """\n\nNote: Return your guess and provide your internal reason.
             Format your response as follows:
@@ -244,12 +238,10 @@ class Agent:
 
         response = self._call_llm(system_prompt, user_prompt)
 
-        # Split the response into the investigated player and the internal reason
         lines = response.split("\n", 1)
         investigated_player = int(re.search(r'\d+', lines[0]).group()) if re.search(r'\d+', lines[0]) else None
         internal_reason = lines[1].strip() if len(lines) > 1 else "No reason provided"
 
-        # Store the internal reason for analysis (not visible to others)
         if current_night > 1:  # Only store reasoning starting from Day 2
             self.detective_thinking.append({
                 "player_id": self.player_name,
@@ -258,7 +250,6 @@ class Agent:
             })
 
         return investigated_player
-
 
     def don_guess_detective(self, game_log: str, alive_players: list[int], current_night: int = 1) -> tuple:
         possible_targets = [p for p in alive_players if
@@ -298,7 +289,6 @@ class Agent:
         guessed_player = int(re.search(r'\d+', lines[0]).group()) if re.search(r'\d+', lines[0]) else None
         reason = lines[1].strip() if len(lines) > 1 else "No reason provided"
         return guessed_player, reason
-
 
     def decide_kill(self, game_log: str, candidates: list[int], mafia_votes: list[tuple] = None) -> int:
         possible_targets = [f"player_{i}" for i in candidates]
@@ -379,7 +369,7 @@ class Agent:
                 "Try to cast suspicion on innocent players or mislead them about your role.\n"
             )
 
-        else:  # Civilian
+        else:
             user_prompt += (
                 "You were an innocent civilian.\n"
                 "Now that you're gone, give your final thoughts to help your team.\n"

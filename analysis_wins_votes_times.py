@@ -1,6 +1,7 @@
 import json
 import os
-from pprint import pprint
+from typing import Dict
+from statistics import mean, stdev
 
 
 def calculate_win_rates_different(folder_name, json_name):
@@ -92,40 +93,33 @@ def calculate_win_rates_different(folder_name, json_name):
 
 
 def calculate_win_rates_same(folder_name, json_name):
-    # Initialize dictionaries to store wins, losses, and total games per LLM
     mafia_wins = {}
     mafia_losses = {}
     llm_total_games = {}
 
-    # Loop through the files in the folder
     json_files = [f for f in os.listdir(folder_name) if f.endswith('.json')]
 
-    # Process each JSON file
     for file_name in json_files:
-        llm_name = file_name.split('_')[0]  # Get the LLM's name (before the first '_')
+        llm_name = file_name.split('_')[0]
         file_path = os.path.join(folder_name, file_name)
 
         with open(file_path, 'r') as file:
             games = json.load(file)
 
-        # Initialize LLM stats if not already present
         if llm_name not in mafia_wins:
             mafia_wins[llm_name] = 0
             mafia_losses[llm_name] = 0
             llm_total_games[llm_name] = 0
 
-        # Process each game
         for game in games:
             winner = game['game_details']['game_outcome']['winner']
-            llm_total_games[llm_name] += 1  # Count this game for the LLM
+            llm_total_games[llm_name] += 1
 
-            # Check if the LLM won or lost
             if winner == "Mafia wins!":
                 mafia_wins[llm_name] += 1
             else:
                 mafia_losses[llm_name] += 1
 
-    # Calculate win ratios for each LLM
     llm_win_ratios = {}
     for llm in llm_total_games:
         total_games = llm_total_games[llm]
@@ -138,8 +132,104 @@ def calculate_win_rates_same(folder_name, json_name):
             "total_games": total_games
         }
 
-    # Save the result to a JSON file
     with open(json_name, "w") as file:
         json.dump(llm_win_ratios, file, indent=4)
 
     return llm_win_ratios
+
+
+def llms_deception_detection(folder_name: str, json_name: str) -> dict:
+    json_paths = [os.path.join(folder_name, fname) for fname in os.listdir(folder_name) if fname.endswith('.json')]
+
+    all_games = []
+    for path in json_paths:
+        with open(path, 'r') as file:
+            all_games.extend(json.load(file))
+
+    llms_used = list({player['llm_name'] for game in all_games for player in game['game_details']['players']})
+
+    stats = {
+        llm_name: {
+            "civilian_correct_votes": 0,
+            "civilian_wrong_votes": 0,
+            "civilian_no_one": 0,
+            "got_civilian_votes_as_mafia": 0,
+            "alive_civilian_voting_opportunities": 0
+        }
+        for llm_name in llms_used
+    }
+
+    for game in all_games:
+        players_info = {p['player_id']: p for p in game['game_details']['players']}
+        mafia_ids = [pid for pid, p in players_info.items() if p['role'] in {'mafia', 'don'}]
+        civilian_ids = [pid for pid, p in players_info.items() if p['role'] == 'civilian']
+
+        for log in game['game_details']['game_log']:
+            if "day" in log:
+                day_votes = [event for event in log['events'] if 'vote' in event]
+
+                alive_mafia_ids = [event['player_id'] for event in day_votes if event['player_id'] in mafia_ids]
+
+                civilian_vote_count = sum(
+                    1 for event in day_votes
+                    if event['player_id'] in civilian_ids
+                )
+                for mafia_id in alive_mafia_ids:
+                    mafia_llm = players_info[mafia_id]['llm_name']
+                    stats[mafia_llm]["alive_civilian_voting_opportunities"] += civilian_vote_count
+
+                for event in day_votes:
+                    voter_id = event['player_id']
+                    voted_id = event['vote']
+                    if voter_id in civilian_ids:
+                        voter_llm = players_info[voter_id]['llm_name']
+                        if voted_id == "no one":
+                            stats[voter_llm]["civilian_no_one"] += 1
+                        elif voted_id in mafia_ids:
+                            stats[voter_llm]["civilian_correct_votes"] += 1
+                            voted_llm = players_info[voted_id]['llm_name']
+                            stats[voted_llm]["got_civilian_votes_as_mafia"] += 1
+                        else:
+                            stats[voter_llm]["civilian_wrong_votes"] += 1
+    with open(json_name, "w") as f:
+        json.dump(stats, f, indent=4)
+    return stats
+
+
+def mafia_vs_civilian_response_times(folder_name: str, output_json: str) -> Dict:
+    llm_durations = {}
+    for file_name in os.listdir(folder_name):
+        if file_name.endswith('.json'):
+            full_path = os.path.join(folder_name, file_name)
+            with open(full_path, 'r') as file:
+                games = json.load(file)
+            for game in games:
+                for player in game['game_details']['players']:
+                    llm = player['llm_name']
+                    role = player['role']
+                    durations = player.get('opinion_speech_generation_durations', [])
+
+                    if llm not in llm_durations:
+                        llm_durations[llm] = {'mafia': [], 'civilian': []}
+
+                    if role in ['mafia', 'don']:
+                        llm_durations[llm]['mafia'].extend(durations)
+                    elif role in ['civilian', 'detective']:
+                        llm_durations[llm]['civilian'].extend(durations)
+
+    result = {}
+    for llm, role_durations in llm_durations.items():
+        mafia_times = role_durations['mafia']
+        civilian_times = role_durations['civilian']
+        result[llm] = {
+            "avg_mafia_response_time": round(mean(mafia_times), 3) if mafia_times else 0,
+            "std_mafia_response_time": round(stdev(mafia_times), 3) if len(mafia_times) > 1 else 0,
+            "num_mafia_statements": len(mafia_times),
+            "avg_civilian_response_time": round(mean(civilian_times), 3) if civilian_times else 0,
+            "std_civilian_response_time": round(stdev(civilian_times), 3) if len(civilian_times) > 1 else 0,
+            "num_civilian_statements": len(civilian_times)
+        }
+
+    with open(output_json, 'w') as f:
+        json.dump(result, f, indent=4)
+    return result

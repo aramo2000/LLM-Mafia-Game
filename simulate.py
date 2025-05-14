@@ -7,7 +7,6 @@ from utils import retry
 
 
 def validate_llms_and_roles(llms_lists, roles_tuples, number_of_games):
-
     target_detective = number_of_games // 5
     target_don = number_of_games // 5
     target_mafia = (2 * number_of_games) // 5
@@ -54,7 +53,7 @@ def run_single_mafia_same(llm_name: str):
     return game.game_data
 
 
-# @retry()
+@retry()
 def run_single_mafia_different(llm_names: list, preassigned_roles: list):
     game = MafiaGame.from_llm_list(llm_names, preassigned_roles)
     game.run()
@@ -148,7 +147,6 @@ def run_games_different_llms(number_of_games: int, json_name: str):
                 print(f"⚠️ Retry because of game {game_idx + 1} due to assignment issue: {e}")
     pprint(role_counts)
 
-    # first = False
     for llms_row in all_assigned_llms:
         roles = ["detective", "don", "mafia", "mafia", "civilian", "civilian", "civilian", "civilian", "civilian",
                  "civilian"]
@@ -158,5 +156,5 @@ def run_games_different_llms(number_of_games: int, json_name: str):
             json.dump(games_total_record, file, indent=4)
 
 
-# run_games_different_llms(10, "different_4.json")
-# run_games_same_llm(llm_name="openai", number_of_games=1, json_name="mafia_same_10s_1.json")
+run_games_different_llms(10, "different_4.json")
+run_games_same_llm(llm_name="openai", number_of_games=1, json_name="mafia_same_10s_1.json")

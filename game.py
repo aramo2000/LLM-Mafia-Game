@@ -41,7 +41,6 @@ class MafiaGame:
                     mafia_player_indices=[]
                 ))
 
-        # Initialize game data storage
         self.game_data = {
             "game_details": {
                 "players": [],
@@ -66,7 +65,7 @@ class MafiaGame:
         else:
             roles = ["civilian"] * 6 + ["detective"] + ["mafia"] * 2 + ["don"]
             random.shuffle(roles)
-        # Now shuffle players and roles together
+
         combined = list(zip(llm_names, roles))
         random.shuffle(combined)
         llm_names, roles = zip(*combined)
@@ -95,10 +94,8 @@ class MafiaGame:
                 )
             players.append(agent)
 
-        # Create instance using existing constructor with a dummy llm_name
         game = cls(llm_name="default_llm")
 
-        # Override the auto-generated values
         game.players = players
         game.roles = roles
         game.num_players = num_players
@@ -114,12 +111,10 @@ class MafiaGame:
         return game
 
     def _initialize_players(self):
-        # Initialize player details for the game
         for i, player in enumerate(self.players):
             player_data = player.get_player_info()
             self.game_data["game_details"]["players"].append(player_data)
 
-        # Track mafia players and detective player
         mafia_players = [player.player_name for player in self.players if player.role in ["mafia", "don"]]
         self.game_data["game_details"]["mafia_players"] = mafia_players
         self.game_data["game_details"]["detective_player"] = next(
@@ -153,7 +148,7 @@ class MafiaGame:
             }
             if "don_guesses" not in self.game_data["game_details"]:
                 self.game_data["game_details"]["don_guesses"] = []
-            # Store full version in JSON (for post-game review)
+
             self.game_data["game_details"]["don_guesses"].append({
                 "night": self.night_count,
                 "don_id": don_guess_info["don_id"],
@@ -161,15 +156,15 @@ class MafiaGame:
                 "is_detective": don_guess_info["is_detective"],
                 "reason": don_guess_info["reason"]
             })
-            # Share result only (no reason) with other mafia
+
             n =  don_guess_info["night"]
             guessedP = don_guess_info["guessed_player"]
             is_det = don_guess_info["is_detective"]
             for i in alive_mafia:
                 self.players[i].don_guesses.append(f"night: {n} - guessed_player_{guessedP} - is_detective? {is_det}")
 
-        mafia_votes = []
         # Mafia members vote
+        mafia_votes = []
         for i in alive_mafia:
             if self.roles[i] != "don":
                 vote = self.players[i].decide_kill(self.game_log, alive_players)
@@ -186,7 +181,6 @@ class MafiaGame:
             )
             mafia_votes.append((don_index, final_target))
         else:
-            # Mafia majority vote logic
             vote_counts = {}
             for _, vote in mafia_votes:
                 vote_counts[vote] = vote_counts.get(vote, 0) + 1
@@ -212,8 +206,7 @@ class MafiaGame:
                 }
             }
 
-            # Capture the detective's internal reasoning
-            if self.players[detective_index].detective_thinking:  # Only access if list is not empty
+            if self.players[detective_index].detective_thinking:
                 detective_thinking = {
                     "player_id": self.players[detective_index].player_name,
                     "investigated_player": f"player_{investigate_target}",
@@ -236,10 +229,7 @@ class MafiaGame:
             self.game_log += f"\nNight {self.night_count}: Mafia killed player_{final_target}"
             self.game_log += f"\nFinal words from player_{final_target}: {final_words}"
 
-
-        # Add the mafia's internal thinking (reason) to the game log
         if hasattr(self, "game_data"):
-            # Collect mafia reasoning
             mafia_reasons = []
             for mafia_player, vote in mafia_votes:
                 if hasattr(self.players[mafia_player], 'mafia_thinking') and self.players[mafia_player].mafia_thinking:
@@ -259,14 +249,13 @@ class MafiaGame:
                 "night": self.night_count,
                 "mafia_kill": f"player_{final_target}",
                 "detective_investigation": investigation_result or {},
-                "mafia_reasons": mafia_reasons,  # Store mafia's internal thoughts/reasoning for analysis
-                "detective_thinking": detective_thinking,  # Store detective's internal reasoning
+                "mafia_reasons": mafia_reasons,
+                "detective_thinking": detective_thinking,
                 "final_words": {
                     "player_id": f"player_{final_target}",
                     "words": final_words
                 }
             })
-
 
     def day_phase(self):
         print("day_phase")
@@ -276,16 +265,14 @@ class MafiaGame:
         self.game_log += f"\n\nDay {self.day_count} Begins"
         self.game_data["game_details"]["game_log"].append({
             "day": self.day_count,
-            "events": []  # Initialize events list for the day
+            "events": []
         })
 
-        # Randomly select the first speaker for the opinion phase
         random_start_player = random.choice(alive_players)
         start_index = alive_players.index(random_start_player)
-        # Rotate the list to start from the random player
+
         alive_players = alive_players[start_index:] + alive_players[:start_index]
 
-        # Each player gives a statement and logs it as an event
         for i in alive_players:
             statement = self.players[i].speak_opinion(self.game_log)
             self.opinion_log += f"\nplayer_{i} says: {statement}"
@@ -298,16 +285,14 @@ class MafiaGame:
 
         vote_counts = {n: 0 for n in alive_players}
         no_one_votes = 0
-        votes_and_reasons = []  # To store votes and reasons for visibility
+        votes_and_reasons = []
 
-        # Randomly select the first voter for the voting phase
         random_start_player = random.choice(alive_players)
         start_index = alive_players.index(random_start_player)
-        # Rotate the list to start from the random player
+
         alive_players = alive_players[start_index:] + alive_players[:start_index]
 
         for i in alive_players:
-            # Before voting, show past votes and reasons
             past_votes = "\n".join([f"player_{voter} voted for player_{target}"
                                     for voter, target in votes_and_reasons])
             vote, reason = self.players[i].vote_day(self.game_log, alive_players, past_votes)
@@ -318,13 +303,11 @@ class MafiaGame:
                 vote_counts[vote] += 1
                 vote_statement_with_reason = f"player_{i} voted to eliminate player_{vote}"
 
-            # Store the current vote and reason
             votes_and_reasons.append((i, vote))
 
             self.votes_log += f"\n{vote_statement_with_reason}"
             self.game_log += f"\n{vote_statement_with_reason}"
 
-            # Add voting actions to the day's events
             self.game_data["game_details"]["game_log"][-1]["events"].append({
                 "player_id": f"player_{i}",
                 "vote": f"player_{vote}" if vote != -1 else "no one",
@@ -332,11 +315,8 @@ class MafiaGame:
             })
 
         most_votes_player = max(vote_counts, key=vote_counts.get)
-        # Sort by vote count in descending order
         sorted_votes = sorted(vote_counts.items(), key=lambda item: item[1], reverse=True)
-        # Get top two players and their vote counts
         top_two = sorted_votes[:2]
-        # Unpack them
         (first_player, first_votes), (second_player, second_votes) = top_two
         if first_votes == second_votes:
             most_votes_count = 0
@@ -441,7 +421,6 @@ class MafiaGame:
                 thinking_cost = usage["thinking_tokens"] * price_per_token["thinking"]
                 full_output_cost = output_cost + thinking_cost
 
-                # Store the results in the llm_costs dictionary
                 llm_costs[llm_name] = {
                     "input_cost": input_cost,
                     "output_cost": output_cost,
@@ -465,11 +444,9 @@ class MafiaGame:
         return llm_costs
 
     def print_token_costs(self):
-        # Get the token counts and costs
         full_usage = self.getTokenCountForLLM()
         llm_costs = self.calculate_token_costs()
 
-        # Print individual costs for each LLM
         for llm_name in full_usage:
             print(f"LLM: {llm_name}")
             print(f"{'=' * 50}")
@@ -487,7 +464,6 @@ class MafiaGame:
 
             print(f"{'=' * 50}\n")
 
-        # Print the total costs for the run
         print(f"{'=' * 50}")
         print(f"Total Costs for the Run:")
         print(f"  Total Input Cost: ${llm_costs['total_costs']['total_input_cost']:.6f}")
