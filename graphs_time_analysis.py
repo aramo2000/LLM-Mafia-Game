@@ -20,7 +20,6 @@ ci_factor = 1.96  # 85% confidence interval
 bar_width = 0.35
 offset = 0.1
 
-# Re-plotting with increased y-axis limit for better scaling
 def plot_response_times_with_ylim(data, title):
     ylim_max = 110
     llms = list(data.keys())
