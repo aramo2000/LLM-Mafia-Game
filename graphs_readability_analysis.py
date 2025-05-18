@@ -19,7 +19,7 @@ with open(path+"compact_readability_analysis_different.json") as f:
 llms = list(same_data.keys())
 llms.sort()
 bar_width = 0.35
-ci_factor = 1.44  # for 85% confidence interval
+ci_factor = 2.576  # for 99% confidence interval
 offset = 0.1
 
 def plot_reading_ease(data, title):
@@ -66,5 +66,5 @@ def plot_reading_ease(data, title):
     plt.show()
 
 
-plot_reading_ease(same_data, "Flesch Reading Ease by Role (Same-Model Games) with 85% CI")
-plot_reading_ease(diff_data, "Flesch Reading Ease by Role (Different-Model Games) with 85% CI")
+plot_reading_ease(same_data, "Flesch Reading Ease by Role (Same-Model Games) with 99% CI")
+plot_reading_ease(diff_data, "Flesch Reading Ease by Role (Different-Model Games) with 99% CI")
